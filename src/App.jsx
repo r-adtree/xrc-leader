@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
 // ─── TOKENS ──────────────────────────────────────────────────────────────────
-const Y="#FCD308",BG="#0A0A0A",C1="#141414",C2="#1C1C1C",C3="#252525";
+const Y="#FCD308",BG="#0D0D0D",C1="#161616",C2="#1F1F1F",C3="#272727";
 const LN="rgba(255,255,255,0.07)",LH="rgba(255,255,255,0.13)";
-const WT="#F0F0F0",MT="#787878",DT="#3C3C3C";
+const WT="#F2F2F2",MT="#909090",DT="#555555";
 const GD="#FFD060",SL="#B8C4CF",BZ="#D4845A",RED="#FF4444";
 
 const idr=(n)=>{if(!n||n<=0)return"Rp 0";if(n>=1e9)return`Rp ${(n/1e9).toFixed(2)}M`;if(n>=1e6)return`Rp ${(n/1e6).toFixed(1)}JT`;if(n>=1e3)return`Rp ${Math.round(n/1e3)}rb`;return`Rp ${n}`;};
@@ -138,26 +138,22 @@ const WK_STATS={
 };
 // Uses the actual adtreeGO branding: bubbly rounded wordmark + GO badge
 function Logo({h=26}){
-  const r=h/26;
+  // Real AdtreeGO logo from uploaded SVG
+  const scale = h / 80;
+  const w = Math.round(260 * scale);
   return(
-    <div style={{display:"flex",alignItems:"center",height:h}}>
-      <svg height={h} viewBox="0 0 210 34" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"auto"}}>
-        {/* Bubbly "adtree" text approximated with rounded path style */}
-        <text x="1" y="27" fontSize="29" fontWeight="900" fill={Y}
-          style={{fontFamily:"'Nunito','Varela Round','Arial Rounded MT Bold',system-ui,sans-serif"}}
-          letterSpacing="-0.5">adtree</text>
-        {/* "GO" badge - rounded rectangle with border */}
-        <rect x="152" y="2" width="52" height="28" rx="9" fill="none" stroke={Y} strokeWidth="2.5"/>
-        <text x="178" y="22" textAnchor="middle" fontSize="15" fontWeight="900" fill={Y}
-          style={{fontFamily:"'Arial Black','Arial Bold',sans-serif"}}>GO</text>
-        {/* small dot above d-t connector (brand mark) */}
-        <circle cx="45" cy="4" r="3.5" fill={Y}/>
-      </svg>
-    </div>
+    <svg height={h} width={w} viewBox="140 380 600 220" xmlns="http://www.w3.org/2000/svg" style={{display:"block"}}>
+      <path d="M0 0 C1.20446777 0.01047363 2.40893555 0.02094727 3.64990234 0.03173828 C5.60283203 0.04140625 5.60283203 0.04140625 7.59521484 0.05126953 C8.9754258 0.06798149 10.35563413 0.08491139 11.73583984 0.10205078 C13.12385436 0.11208072 14.51187574 0.12120655 15.89990234 0.12939453 C19.3037201 0.15303215 22.70719491 0.18598211 26.11083984 0.22705078 C27.37569933 4.50729258 28.41467102 8.72522132 29.29833984 13.10205078 C31.33321937 21.27224548 36.09340832 27.62861226 43.16162109 32.23486328 C49.12013478 35.26785422 55.54599456 36.38898543 62.11083984 37.22705078 C63.11083984 38.22705078 63.11083984 38.22705078 63.22436523 41.00268555 C63.21912842 42.21239014 63.2138916 43.42209473 63.20849609 44.66845703 C63.20527344 45.97363281 63.20205078 47.27880859 63.19873047 48.62353516 C63.19037386 50.01220768 63.18190889 51.40087955 63.17333984 52.78955078 C63.1683265 54.18212734 63.16376331 55.5747056 63.15966797 56.96728516 C63.14783418 60.38724948 63.13134865 63.80712922 63.11083984 67.22705078 C58.92738519 69.62517278 55.76736366 69.07581213 51.17333984 68.22705078 C50.14756836 68.07429688 50.14756836 68.07429688 49.10107422 67.91845703 C41.91578609 66.64776797 35.61679217 63.42750379 29.11083984 60.22705078 C29.10204048 61.22064606 29.10204048 61.22064606 29.09306335 62.23431396 C29.02873123 69.17861514 28.94421237 76.1224698 28.84838867 83.06640625 C28.81529852 85.65195804 28.787218 88.2375793 28.7644043 90.82324219 C28.73056484 94.55710233 28.67823418 98.29033481 28.62255859 102.02392578 C28.61616867 103.16504822 28.60977875 104.30617065 28.60319519 105.48187256 C28.34015228 120.10280239 24.51054457 132.59098913 14.11083984 143.22705078 C0.45454472 154.16651254 -13.66435652 157.71839228 -30.88916016 156.22705078 C-44.46933938 153.81440192 -55.92131623 146.48142993 -63.88916016 135.22705078 C-71.00094432 121.90767017 -73.01310446 107.8652879 -68.93212891 93.24658203 C-64.44372111 80.25205309 -57.81800274 71.12421515 -45.88916016 64.22705078 C-34.21664146 58.98471199 -22.19481502 57.33051676 -9.88916016 61.22705078 C-9.86446441 65.32046577 -9.84630223 69.41385199 -9.83422852 73.50732422 C-9.82919585 74.90023555 -9.82236918 76.29314159 -9.8137207 77.68603516 C-9.80160864 79.68666324 -9.79645603 81.68732966 -9.79150391 83.68798828 C-9.78626709 84.89245605 -9.78103027 86.09692383 -9.77563477 87.33789062 C-9.88916016 90.22705078 -9.88916016 90.22705078 -10.88916016 92.22705078 C-11.72318359 92.12005859 -12.55720703 92.01306641 -13.41650391 91.90283203 C-20.43678194 91.15496736 -26.57537132 90.65423723 -32.88916016 94.22705078 C-37.20056648 98.5384571 -38.0391745 102.0793312 -38.07666016 108.03955078 C-38.02866323 112.44993524 -37.98462269 116.24567197 -35.88916016 120.22705078 C-34.05582682 121.56038411 -34.05582682 121.56038411 -31.88916016 122.22705078 C-31.29619141 122.56607422 -30.70322266 122.90509766 -30.09228516 123.25439453 C-25.91941592 125.09667191 -21.35662377 124.67315062 -16.88916016 124.22705078 C-13.43569867 122.87958554 -13.43569867 122.87958554 -10.88916016 121.22705078 C-10.22916016 121.22705078 -9.56916016 121.22705078 -8.88916016 121.22705078 C-4.7308917 113.56775732 -4.60039382 105.01143317 -4.69384766 96.48486328 C-4.69676819 95.46249069 -4.69968872 94.4401181 -4.70269775 93.38676453 C-4.71025966 91.18625933 -4.722439 88.98576598 -4.73883057 86.78530884 C-4.76450122 83.30582233 -4.77742344 79.82648931 -4.78710938 76.34692383 C-4.8098745 68.97356331 -4.84842182 61.60033098 -4.88916016 54.22705078 C-4.93633361 45.65355367 -4.97706863 37.08012677 -5.0010376 28.50653076 C-5.01403377 25.07294173 -5.03903716 21.63957105 -5.06445312 18.20605469 C-5.07171334 16.11539909 -5.0784174 14.02474146 -5.08447266 11.93408203 C-5.0948053 10.97515549 -5.10513794 10.01622894 -5.11578369 9.02824402 C-5.11592468 8.15646011 -5.11606567 7.28467621 -5.11621094 6.38647461 C-5.12065216 5.62700027 -5.12509338 4.86752594 -5.12966919 4.08503723 C-4.68921018 0.68239216 -3.21791495 0.25288667 0 0 Z" fill="#FED42B" transform="translate(344.88916015625,390.77294921875)"/>
+      <path d="M0 0 C2.5355676 2.03251912 4.76031507 4.16176694 6.94921875 6.5625 C7.02269531 5.17224609 7.02269531 5.17224609 7.09765625 3.75390625 C7.17242187 2.55636719 7.2471875 1.35882813 7.32421875 0.125 C7.39382812 -1.06996094 7.4634375 -2.26492188 7.53515625 -3.49609375 C7.67179687 -4.46675781 7.8084375 -5.43742187 7.94921875 -6.4375 C11.06876003 -7.99727064 14.37881259 -7.55854126 17.80078125 -7.53515625 C18.57481293 -7.5337413 19.3488446 -7.53232635 20.14633179 -7.53086853 C22.62233317 -7.52526403 25.09824463 -7.51271083 27.57421875 -7.5 C29.25130078 -7.49498558 30.92838422 -7.49042257 32.60546875 -7.48632812 C36.72008681 -7.47529315 40.83463753 -7.45802554 44.94921875 -7.4375 C46.52104235 -4.64345718 47.19902357 -2.64088382 47.19645691 0.56069946 C47.2006514 1.34582413 47.20484589 2.13094879 47.20916748 2.93986511 C47.20354797 3.7919606 47.19792847 4.64405609 47.19213867 5.52197266 C47.19403702 6.42642624 47.19593536 7.33087982 47.19789124 8.26274109 C47.20159448 11.25076987 47.19090241 14.23855534 47.1796875 17.2265625 C47.17849549 19.301137 47.17804258 21.37571204 47.17829895 23.45028687 C47.17673494 27.7963194 47.16845045 32.14226946 47.1550293 36.48828125 C47.13801846 42.06834439 47.13421561 47.64831706 47.13497448 53.22840309 C47.13470304 57.51080189 47.12922639 61.79318078 47.12197304 66.07557297 C47.11878396 68.13374048 47.11681841 70.19191026 47.11607933 72.25008011 C47.1139195 75.12069829 47.10518361 77.99121904 47.09448242 80.86181641 C47.09493561 81.71796036 47.09538879 82.57410431 47.09585571 83.45619202 C47.06369755 89.3335424 47.06369755 89.3335424 45.94921875 91.5625 C40.69816433 91.58714928 35.4471433 91.60533568 30.19604492 91.61743164 C28.40827854 91.62247218 26.6205163 91.62930454 24.83276367 91.63793945 C22.26870707 91.6500173 19.70470478 91.65573094 17.140625 91.66015625 C15.93437218 91.66789818 15.93437218 91.66789818 14.70375061 91.67579651 C12.7852016 91.67599215 10.86676507 91.62451983 8.94921875 91.5625 C7.13805919 89.75134044 7.56722427 86.94971773 7.38671875 84.5 C7.26103516 82.84291016 7.26103516 82.84291016 7.1328125 81.15234375 C7.07222656 80.29769531 7.01164062 79.44304687 6.94921875 78.5625 C6.28921875 78.5625 5.62921875 78.5625 4.94921875 78.5625 C4.58183594 79.44228516 4.58183594 79.44228516 4.20703125 80.33984375 C-0.01556372 87.80151002 -8.64371826 90.99729756 -16.42578125 93.25 C-29.77408486 94.83908376 -42.86763684 91.77676756 -53.6484375 83.58984375 C-65.12851825 73.77203714 -71.89700457 62.1305757 -73.859375 47.12109375 C-74.64308603 32.5504662 -70.840759 19.00651999 -61.28515625 7.81640625 C-45.35359841 -8.25441346 -19.094075 -13.71208259 0 0 Z M-26.42578125 29.5 C-29.82507826 33.81449236 -30.5018048 37.83405811 -30.3671875 43.21875 C-29.6493037 48.53640775 -27.31294891 52.39048718 -23.42578125 56 C-18.20353053 59.43569127 -13.18010898 59.0117701 -7.05078125 58.5625 C-2.10817709 56.79728423 1.49184308 54.39596346 3.9296875 49.65625 C6.3681074 43.6081168 6.13417135 38.67822516 3.94921875 32.5625 C1.2277705 28.15187698 -2.06643534 25.65676017 -6.92578125 23.875 C-14.90990501 22.70086415 -20.26717943 24.47587746 -26.42578125 29.5 Z" fill="#FED32A" transform="translate(218.05078125,451.4375)"/>
+      <path d="M0 0 C8.82401778 7.25420188 13.06820541 16.20258081 14.24609375 27.4921875 C14.36788994 28.94071548 14.48116762 30.38998483 14.5859375 31.83984375 C14.63911133 32.53851563 14.69228516 33.2371875 14.74707031 33.95703125 C14.95133079 37.73308985 14.93275907 39.16336139 12.7734375 42.40234375 C10.17819037 43.1263 7.72612469 43.66643402 5.08203125 44.12109375 C3.91487328 44.33711243 3.91487328 44.33711243 2.72413635 44.55749512 C0.22173898 45.01767889 -2.28342387 45.46018641 -4.7890625 45.90234375 C-6.41882963 46.19937177 -8.04838984 46.49753753 -9.67773438 46.796875 C-14.52424976 47.68306164 -19.37481022 48.54535643 -24.2265625 49.40234375 C-25.05549011 49.54913574 -25.88441772 49.69592773 -26.73846436 49.84716797 C-31.56724175 50.70225781 -36.39661182 51.55390715 -41.2265625 52.40234375 C-41.2265625 53.06234375 -41.2265625 53.72234375 -41.2265625 54.40234375 C-35.21052332 60.13190488 -29.82491757 61.76814062 -21.4765625 61.65234375 C-20.76991455 61.64557617 -20.0632666 61.63880859 -19.33520508 61.63183594 C-9.52746687 61.43902179 -1.30824895 58.95904985 7.7734375 55.40234375 C9.44752205 60.06638717 10.54683987 64.67317011 11.4609375 69.52734375 C11.60337891 70.22988281 11.74582031 70.93242188 11.89257812 71.65625 C13.20868305 78.58380725 13.20868305 78.58380725 11.7734375 81.40234375 C-0.90255633 91.79250263 -20.65113875 92.87997964 -36.2265625 91.40234375 C-50.62542777 89.41008696 -63.6805453 83.46071513 -73.09765625 72.15625 C-81.74294256 60.53624151 -85.11256018 48.73939716 -84.2265625 34.40234375 C-82.039472 20.45318386 -75.79628702 9.12193284 -64.62109375 0.359375 C-45.25836802 -12.74469191 -19.27495921 -13.83062863 0 0 Z M-40.2265625 15.40234375 C-43.20104214 18.37682339 -45.15798315 21.32231352 -46.2265625 25.40234375 C-45.93482362 27.74124178 -45.60521681 30.07593526 -45.2265625 32.40234375 C-41.25526846 31.73812081 -37.28611419 31.06244728 -33.31860352 30.37597656 C-31.96790894 30.14395541 -30.61666631 29.915102 -29.26489258 29.68945312 C-27.3249305 29.36505903 -25.38702894 29.02841672 -23.44921875 28.69140625 C-22.28140869 28.49240723 -21.11359863 28.2934082 -19.91040039 28.08837891 C-19.02473389 27.8619873 -18.13906738 27.6355957 -17.2265625 27.40234375 C-16.01907907 25.49432002 -16.01907907 25.49432002 -16.57421875 23.59765625 C-17.89405114 19.77519086 -18.88513965 17.70496855 -21.9765625 14.96484375 C-28.60031834 11.78034575 -33.8866799 11.81112485 -40.2265625 15.40234375 Z" fill="#FED329" transform="translate(669.2265625,453.59765625)"/>
+      <path d="M0 0 C9.86465288 9.86465288 12.77435359 21.66987965 12.8125 35.25 C12.7966861 36.75006131 12.7776619 38.25011039 12.75 39.75 C6.70212455 42.71245285 0.74055141 43.87776769 -5.87109375 45.01171875 C-6.97099136 45.20723831 -8.07088898 45.40275787 -9.20411682 45.60420227 C-12.69722707 46.22326806 -16.19226748 46.83054346 -19.6875 47.4375 C-22.06459047 47.85664372 -24.44154533 48.27655727 -26.81835938 48.69726562 C-32.62736575 49.72376263 -38.43799934 50.74060247 -44.25 51.75 C-43.07002441 53.19656982 -43.07002441 53.19656982 -41.86621094 54.67236328 C-41.42372009 55.21482697 -40.98122925 55.75729065 -40.52532959 56.31619263 C-36.90887865 60.38203887 -31.59211203 60.62585809 -26.44921875 61.1015625 C-17.08861915 61.54938582 -9.22679085 60.02178728 -0.4453125 56.84375 C2.75 55.75 2.75 55.75 5.75 55.75 C8.31792376 64.00404065 9.90021931 72.08019995 9.75 80.75 C0.60113437 85.82497866 -7.77747766 89.21976843 -18.25 90.75 C-19.29671875 90.915 -20.3434375 91.08 -21.421875 91.25 C-37.85486175 93.21214767 -55.08380687 88.59073512 -68.1875 78.5 C-79.01156457 69.01302576 -85.10443608 57.060737 -86.25 42.75 C-86.40951172 28.07492216 -82.01468476 16.05296447 -71.99609375 5.33984375 C-52.14184833 -13.74955112 -22.47792901 -15.56164316 0 0 Z M-45.25 18.75 C-47.76173639 23.10311069 -48.29911443 26.77665263 -48.25 31.75 C-44.29828356 31.06021684 -40.34730677 30.36635857 -36.39697266 29.66870117 C-35.05276927 29.43189934 -33.70836839 29.19621575 -32.36376953 28.96166992 C-30.43210225 28.62451914 -28.50119482 28.28302389 -26.5703125 27.94140625 C-25.40773926 27.73717041 -24.24516602 27.53293457 -23.04736328 27.32250977 C-20.31054011 26.88810144 -20.31054011 26.88810144 -18.25 25.75 C-18.65290042 20.10939411 -20.46914326 17.71528877 -24.25 13.75 C-31.744377 10.0028115 -40.04326917 12.71376548 -45.25 18.75 Z" fill="#FED429" transform="translate(777.25,454.25)"/>
+      <path d="M0 0 C0.87591797 -0.01224609 1.75183594 -0.02449219 2.65429688 -0.03710938 C3.49154297 -0.03904297 4.32878906 -0.04097656 5.19140625 -0.04296875 C5.95783447 -0.04707764 6.7242627 -0.05118652 7.51391602 -0.05541992 C9.4375 0.1875 9.4375 0.1875 11.4375 2.1875 C11.54204373 4.9173369 11.52686137 7.53515057 11.4140625 10.2578125 C11.37652359 11.45215408 11.37652359 11.45215408 11.33822632 12.67062378 C11.25593302 15.21834304 11.15938097 17.76529774 11.0625 20.3125 C11.00426988 22.037729 10.9469664 23.76298954 10.890625 25.48828125 C10.75208312 29.72195821 10.59428512 33.95430166 10.4375 38.1875 C18.0275 38.1875 25.6175 38.1875 33.4375 38.1875 C33.4375 46.4375 33.4375 54.6875 33.4375 63.1875 C25.8475 63.1875 18.2575 63.1875 10.4375 63.1875 C10.39135198 67.18955898 10.35159902 71.19093168 10.32763672 75.19311523 C10.31763757 76.55187118 10.30403376 77.91060594 10.28662109 79.26928711 C10.26210406 81.23281296 10.25203038 83.19650201 10.2421875 85.16015625 C10.23171387 86.33843994 10.22124023 87.51672363 10.21044922 88.73071289 C10.52021947 93.44688175 11.01253458 97.76253458 14.4375 101.1875 C20.48892153 101.72198184 26.47862565 101.31485461 32.4375 100.1875 C33.4375 101.1875 33.4375 101.1875 33.55102539 103.87133789 C33.54317017 105.62305298 33.54317017 105.62305298 33.53515625 107.41015625 C33.53032227 109.30024414 33.53032227 109.30024414 33.52539062 111.22851562 C33.51703403 112.56901109 33.50856907 113.90950588 33.5 115.25 C33.4949866 116.59439942 33.49042342 117.9388006 33.48632812 119.28320312 C33.47449488 122.58467941 33.45800971 125.88606803 33.4375 129.1875 C19.63340807 136.46450621 6.10466208 139.19256778 -9.33203125 135.3203125 C-18.30336508 132.17437924 -24.19595139 126.53756664 -28.5625 118.1875 C-31.59389339 110.96989669 -31.72070003 103.35680751 -31.84375 95.640625 C-31.87136414 94.30109772 -31.87136414 94.30109772 -31.89953613 92.93450928 C-31.97776157 89.13858278 -32.04614554 85.34249763 -32.11474609 81.54638672 C-32.16645141 78.76521008 -32.22367216 75.98418526 -32.28125 73.203125 C-32.29482544 72.34374329 -32.30840088 71.48436157 -32.3223877 70.59893799 C-32.39290443 67.23274102 -32.49112681 64.40161957 -33.5625 61.1875 C-36.8625 61.1875 -40.1625 61.1875 -43.5625 61.1875 C-43.5625 53.9275 -43.5625 46.6675 -43.5625 39.1875 C-41.87125 38.630625 -40.18 38.07375 -38.4375 37.5 C-28.7429499 33.90483436 -24.30333679 28.22610472 -19.5625 19.1875 C-18.10861583 15.57574563 -16.81664905 11.9535867 -15.60546875 8.25390625 C-13.93729638 3.34935454 -13.93729638 3.34935454 -12.5625 1.1875 C-8.36706908 -0.21097697 -4.39368623 0.00324737 0 0 Z" fill="#FED32A" transform="translate(459.5625,407.8125)"/>
+      <path d="M0 0 C3.06 -0.0225 3.06 -0.0225 6.1875 -0.0625 C8.22747437 3.33378125 9.3125 6.0625 9.3125 9.9375 C9.30375 10.82003906 9.295 11.70257812 9.28601563 12.6125 C9.27042969 14.43171875 9.27042969 14.43171875 9.25453125 16.28703125 C9.23835937 18.5625 9.23835937 18.5625 8.3125 20.9375 C5.4375 21.9375 5.4375 21.9375 2.1875 21.9375 C0.8725 21.9375 -0.4425 21.9375 -1.8125 21.9375 C-5.0625 20.9375 -5.0625 20.9375 -6.0625 18.9375 C-7.1875 13.9375 -7.1875 13.9375 -7.1875 9.9375 C-5.8725 3.5625 -5.8725 3.5625 0 0 Z" fill="#FED32A" transform="translate(347.8125,391.0625)"/>
+    </svg>
   );
 }
 
-// ─── BANNER CAROUSEL — inline SVG, no external images ────────────────────────
+// ─── BANNER CAROUSEL - inline SVG, no external images ────────────────────────
 const BANNERS=[
   {
     id:1,eventKey:"super-creator-juni",tag:"MONTHLY",tagBg:Y,tagColor:"#000",
@@ -233,57 +229,143 @@ const BANNERS=[
 ];
 function BannerCarousel({onOpen}){
   const [cur,setCur]=useState(0);
-  const ref=useRef(null);
+  const [popup,setPopup]=useState(null); // banner object for popup
+  const [dragX,setDragX]=useState(0);
+  const [dragging,setDragging]=useState(false);
+  const touchStart=useRef(null);
+  const autoRef=useRef(null);
   const H=150;
-  useEffect(()=>{ const id=setInterval(()=>setCur(c=>(c+1)%BANNERS.length),5000); return()=>clearInterval(id); },[]);
+
   const evMap={};[...ALL_EVENTS,...(loadCampaigns()||[])].forEach(e=>{evMap[e.key]=e;});
+
+  const resetAuto=()=>{
+    if(autoRef.current)clearInterval(autoRef.current);
+    autoRef.current=setInterval(()=>setCur(c=>(c+1)%BANNERS.length),5000);
+  };
+  useEffect(()=>{resetAuto();return()=>clearInterval(autoRef.current);},[]);
+
+  const goTo=(n)=>{setCur((n+BANNERS.length)%BANNERS.length);resetAuto();};
+
+  // Touch handlers
+  const onTouchStart=(e)=>{touchStart.current=e.touches[0].clientX;setDragging(true);setDragX(0);};
+  const onTouchMove=(e)=>{if(touchStart.current===null)return;setDragX(e.touches[0].clientX-touchStart.current);};
+  const onTouchEnd=()=>{
+    if(Math.abs(dragX)>40){dragX<0?goTo(cur+1):goTo(cur-1);}
+    setDragging(false);setDragX(0);touchStart.current=null;
+  };
+  // Mouse drag for desktop
+  const mouseStart=useRef(null);
+  const onMouseDown=(e)=>{mouseStart.current=e.clientX;setDragging(true);};
+  const onMouseMove=(e)=>{if(mouseStart.current===null)return;setDragX(e.clientX-mouseStart.current);};
+  const onMouseUp=()=>{
+    if(mouseStart.current!==null&&Math.abs(dragX)>40){dragX<0?goTo(cur+1):goTo(cur-1);}
+    setDragging(false);setDragX(0);mouseStart.current=null;
+  };
+
+  const handleClick=()=>{
+    if(Math.abs(dragX)>8)return; // was a drag, not a tap
+    const b=BANNERS[cur];
+    const img=evMap[b.eventKey]?.bannerUrl||b.photo;
+    if(img)setPopup(b); // show popup if has image
+    else{const ev=evMap[b.eventKey];if(ev)onOpen(ev);}
+  };
+
   return(
-    <div style={{padding:"12px 16px 0"}} ref={ref}>
-      <div style={{position:"relative",borderRadius:16,overflow:"hidden",height:H,cursor:"pointer",WebkitTapHighlightColor:"transparent"}}
-        onClick={()=>{const ev=evMap[BANNERS[cur].eventKey];if(ev)onOpen(ev);}}>
-        {BANNERS.map((b,i)=>{
-          const ev=evMap[b.eventKey];
-          const img=ev?.bannerUrl||b.photo; // admin override > banner default photo > SVG fallback
-          return(
-            <div key={b.id} style={{position:"absolute",inset:0,transition:"opacity .5s ease",opacity:i===cur?1:0,pointerEvents:i===cur?"auto":"none"}}>
-              {img
-                ? <>
-                    <img src={img} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}
-                      onError={e=>{e.target.style.display="none";}}/>
-                    <div style={{position:"absolute",inset:0,background:"linear-gradient(90deg,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.6) 50%,rgba(0,0,0,0.2) 100%)"}}/>
-                  </>
-                : <svg width="100%" height="100%" viewBox={`0 0 440 ${H}`} preserveAspectRatio="xMidYMid slice"
-                    style={{position:"absolute",inset:0}} dangerouslySetInnerHTML={{__html:b.svg(440,H)}}/>
-              }
-              {/* Text content */}
-              <div style={{position:"absolute",inset:0,padding:"13px 16px",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-                <div>
-                  <span style={{fontSize:9,fontWeight:800,color:b.tagColor,background:b.tagBg,borderRadius:5,padding:"3px 9px",letterSpacing:.4}}>{b.tag}</span>
-                </div>
-                <div>
-                  {b.eyebrow&&<div style={{fontSize:10,fontWeight:600,color:b.accent,marginBottom:3}}>{b.eyebrow}</div>}
-                  <div style={{fontSize:18,fontWeight:900,color:"#fff",lineHeight:1.2,marginBottom:4}}>{b.title}</div>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                    <div style={{fontSize:11,color:"rgba(255,255,255,0.78)"}}>{b.sub}</div>
-                    <span style={{fontSize:11,fontWeight:700,color:b.accent,flexShrink:0,marginLeft:8}}>Lihat →</span>
-                  </div>
-                  <div style={{display:"flex",gap:4,marginTop:9}}>
-                    {BANNERS.map((_,j)=>(
-                      <div key={j} onClick={e=>{e.stopPropagation();setCur(j);}}
-                        style={{width:j===cur?14:5,height:5,borderRadius:3,background:j===cur?"#fff":"rgba(255,255,255,0.3)",transition:"all .3s",cursor:"pointer"}}/>
-                    ))}
+    <>
+      <div style={{padding:"12px 16px 0"}}>
+        <div style={{position:"relative",borderRadius:16,overflow:"hidden",height:H,
+          cursor:dragging?"grabbing":"pointer",WebkitTapHighlightColor:"transparent",userSelect:"none"}}
+          onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
+          onClick={handleClick}>
+          {BANNERS.map((b,i)=>{
+            const ev=evMap[b.eventKey];
+            const img=ev?.bannerUrl||b.photo;
+            const offset=(i-cur)*100+(i===cur?dragX/3:0);
+            return(
+              <div key={b.id} style={{position:"absolute",inset:0,
+                transform:`translateX(${i===cur?dragX*0.3:i<cur?-100:100}%)`,
+                transition:dragging?"none":"transform .35s ease",
+                opacity:i===cur?1:0.3}}>
+                {img
+                  ? <>
+                      <img src={img} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}
+                        onError={e=>{e.target.style.display="none";}}/>
+                      <div style={{position:"absolute",inset:0,background:"linear-gradient(90deg,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.55) 55%,rgba(0,0,0,0.1) 100%)"}}/>
+                    </>
+                  : <svg width="100%" height="100%" viewBox={`0 0 440 ${H}`} preserveAspectRatio="xMidYMid slice"
+                      style={{position:"absolute",inset:0}} dangerouslySetInnerHTML={{__html:b.svg(440,H)}}/>
+                }
+                <div style={{position:"absolute",inset:0,padding:"12px 16px",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+                  <span style={{fontSize:9,fontWeight:800,color:b.tagColor,background:b.tagBg,borderRadius:5,padding:"3px 9px",letterSpacing:.4,alignSelf:"flex-start"}}>{b.tag}</span>
+                  <div>
+                    {b.eyebrow&&<div style={{fontSize:10,fontWeight:600,color:b.accent,marginBottom:2}}>{b.eyebrow}</div>}
+                    <div style={{fontSize:17,fontWeight:900,color:"#fff",lineHeight:1.2,marginBottom:3}}>{b.title}</div>
+                    <div style={{fontSize:10,color:"rgba(255,255,255,0.72)",marginBottom:8}}>{b.sub}</div>
+                    <div style={{display:"flex",gap:4}}>
+                      {BANNERS.map((_,j)=>(
+                        <div key={j} onClick={e=>{e.stopPropagation();goTo(j);}}
+                          style={{width:j===cur?14:5,height:4,borderRadius:2,
+                            background:j===cur?"#fff":"rgba(255,255,255,0.28)",transition:"all .3s",cursor:"pointer"}}/>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+
+      {/* Banner popup - full image with CTA */}
+      {popup&&(()=>{
+        const ev=evMap[popup.eventKey];
+        const img=ev?.bannerUrl||popup.photo;
+        return(
+          <div style={{position:"fixed",inset:0,zIndex:500,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",background:"rgba(0,0,0,0.85)",backdropFilter:"blur(8px)"}}
+            onClick={()=>setPopup(null)}>
+            <div style={{width:"100%",maxWidth:480,background:C1,borderRadius:"20px 20px 0 0",overflow:"hidden",paddingBottom:32}}
+              onClick={e=>e.stopPropagation()}>
+              {/* Full banner image */}
+              <div style={{position:"relative",width:"100%",height:220}}>
+                <img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.8) 100%)"}}/>
+                {/* Close */}
+                <button onClick={()=>setPopup(null)} style={{position:"absolute",top:12,right:12,
+                  width:32,height:32,borderRadius:"50%",background:"rgba(0,0,0,0.5)",border:"none",
+                  color:"#fff",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+                {/* Tag */}
+                <span style={{position:"absolute",top:12,left:12,fontSize:9,fontWeight:800,
+                  color:popup.tagColor,background:popup.tagBg,borderRadius:5,padding:"3px 9px"}}>{popup.tag}</span>
+                {/* Title overlay */}
+                <div style={{position:"absolute",bottom:14,left:16,right:16}}>
+                  <div style={{fontSize:9,fontWeight:600,color:popup.accent,marginBottom:2}}>{popup.eyebrow}</div>
+                  <div style={{fontSize:20,fontWeight:900,color:"#fff",lineHeight:1.2}}>{popup.title}</div>
+                </div>
+              </div>
+              {/* CTA area */}
+              <div style={{padding:"16px 16px 0"}}>
+                <div style={{fontSize:12,color:MT,marginBottom:16,lineHeight:1.6}}>{popup.sub}</div>
+                <button onClick={()=>{setPopup(null);if(ev)onOpen(ev);}}
+                  style={{width:"100%",background:popup.tagBg||Y,border:"none",borderRadius:12,
+                    height:48,fontSize:14,fontWeight:800,color:popup.tagColor||"#000",cursor:"pointer"}}>
+                  Lihat Campaign →
+                </button>
+                <button onClick={()=>setPopup(null)}
+                  style={{width:"100%",background:"transparent",border:"none",
+                    height:36,fontSize:12,color:MT,cursor:"pointer",marginTop:4}}>
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+    </>
   );
 }
 
-// ─── LIVE LEVEL FILTER — level only, no industry (live = always Dinings) ──────
+// ─── LIVE LEVEL FILTER - level only, no industry (live = always Dinings) ──────
 function LiveLevelFilter({filter,setFilter}){
   const lvls=[{id:null,label:"All"},{id:"Lv.1",label:"L1"},{id:"Lv.2",label:"L2"},{id:"Lv.3",label:"L3"},{id:"Lv.4",label:"L4"}];
   return(
@@ -306,13 +388,21 @@ function LiveLevelFilter({filter,setFilter}){
   );
 }
 
-// ─── FILTER BAR — full width, no empty space, minimal ────────────────────────
-function FilterBar({filter,setFilter}){
-  const inds=[{id:"dining",label:"Dinings",icon:"🍽"},{id:"accom",label:"Accommodations",icon:"🏨"},{id:"ttd",label:"Things to Do",icon:"🎯"}];
-  const lvls=[{id:null,label:"All"},{id:"Lv.1",label:"L1"},{id:"Lv.2",label:"L2"},{id:"Lv.3",label:"L3"},{id:"Lv.4",label:"L4"}];
+// ─── FILTER BAR - full width, no empty space, minimal ────────────────────────
+function FilterBar({filter,setFilter,availableInds,availableLvls}){
+  const allInds=[{id:"dining",label:"Dinings",icon:"🍽"},{id:"accom",label:"Accommodations",icon:"🏨"},{id:"ttd",label:"Things to Do",icon:"🎯"}];
+  const allLvls=[{id:null,label:"All"},{id:"Lv.1",label:"L1"},{id:"Lv.2",label:"L2"},{id:"Lv.3",label:"L3"},{id:"Lv.4",label:"L4"}];
+  // Only show industries/levels that have at least one campaign
+  const inds=availableInds?allInds.filter(i=>availableInds.includes(i.id)):allInds;
+  const lvls=availableLvls?allLvls.filter(l=>l.id===null||availableLvls.includes(l.id)):allLvls;
+  // If current selected industry has no campaigns, switch to first available
+  if(inds.length>0&&!inds.find(i=>i.id===filter.industry)){
+    setTimeout(()=>setFilter(f=>({...f,industry:inds[0].id,level:null})),0);
+  }
+  if(inds.length===0)return null;
   return(
     <div style={{padding:"10px 16px 0"}}>
-      <div style={{display:"flex",gap:5}}>
+      {inds.length>1&&<div style={{display:"flex",gap:5,marginBottom:0}}>
         {inds.map(ind=>{
           const a=filter.industry===ind.id;
           return(
@@ -327,9 +417,9 @@ function FilterBar({filter,setFilter}){
             </button>
           );
         })}
-      </div>
-      <div style={{display:"flex",gap:5,marginTop:6,alignItems:"center"}}>
-        <span style={{fontSize:9,color:DT,flexShrink:0,fontWeight:600,letterSpacing:.3,paddingRight:1,textTransform:"uppercase",minWidth:32}}>Level</span>
+      </div>}
+      {lvls.length>1&&<div style={{display:"flex",gap:5,marginTop:6,alignItems:"center"}}>
+        <span style={{fontSize:9,color:DT,flexShrink:0,fontWeight:600,letterSpacing:.3,textTransform:"uppercase",minWidth:32}}>Level</span>
         {lvls.map(lv=>{
           const a=filter.level===lv.id;
           const col=lv.id?lvC(lv.id):"#A0A0A0";
@@ -343,7 +433,7 @@ function FilterBar({filter,setFilter}){
             </button>
           );
         })}
-      </div>
+      </div>}
     </div>
   );
 }
@@ -413,7 +503,7 @@ function RankRow({entry,mode,username,winnerSlots,isUserRow}){
   const val=mode==="sessions"?`${entry.sessions}`:mode==="posts"?fmtN(entry.posts||0):mode==="views"?fmtN(entry.views||0):idr(entry.gmv||0);
   const lbl=mode==="sessions"?"sesi":mode==="posts"?"post":mode==="views"?"views":"GMV";
 
-  // Explicit colors — no template literal ambiguity
+  // Explicit colors - no template literal ambiguity
   const circleBg     = isMe ? "#2A2000" : isElig ? "#081C0E" : "#181818";
   const circleBorder = isMe ? "#FCD308" : isElig ? "#16A34A" : "#2A2A2A";
   const circleColor  = isMe ? "#FCD308" : isElig ? "#16A34A" : "#454545";
@@ -428,7 +518,7 @@ function RankRow({entry,mode,username,winnerSlots,isUserRow}){
       background:rowBg,
       borderBottom:"1px solid rgba(255,255,255,0.04)",
       borderLeft:`3px solid ${rowBorder}`}}>
-      <div style={{minWidth:24,textAlign:"center",fontSize:11,fontWeight:600,color:rankColor}}>
+      <div style={{width:32,textAlign:"right",fontSize:11,fontWeight:600,color:rankColor,flexShrink:0,fontVariantNumeric:"tabular-nums"}}>
         {typeof entry.rank==="number"?`#${entry.rank}`:entry.rank}
       </div>
       <div style={{width:36,height:36,borderRadius:"50%",flexShrink:0,
@@ -470,6 +560,10 @@ function UserPosition({entries,username,mode,winnerSlots,event}){
   const fmt=(v)=>mode==="gmv"?idr(v):fmtN(v);
   const lbl=mode==="posts"?"post":mode==="gmv"?"GMV":mode==="views"?"views":"sesi";
 
+  // Count how many eligible slots are filled
+  const filledSlots=winnerSlots?entries.filter(e=>e.rank<=winnerSlots).length:0;
+  const slotsFull=winnerSlots&&filledSlots>=winnerSlots;
+
   if(found){
     const rank=found.rank;
     const isElig=winnerSlots&&rank<=winnerSlots;
@@ -480,30 +574,44 @@ function UserPosition({entries,username,mode,winnerSlots,event}){
     const pct=cutoffVal>0?Math.min(100,Math.round(myVal/cutoffVal*100)):100;
     return(
       <div style={{margin:"12px 16px 0",background:isElig?"rgba(22,163,74,0.05)":"rgba(255,255,255,0.02)",
-        border:`1px solid ${isElig?"#16A34A33":"rgba(255,255,255,0.07)"}`,borderRadius:12,padding:"12px 14px"}}>
+        border:`1px solid ${isElig?"#16A34A33":"rgba(255,255,255,0.09)"}`,borderRadius:12,padding:"12px 14px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:gapToCutoff>0?10:0}}>
           <div style={{fontSize:11,fontWeight:600,color:isElig?"#16A34A":"#FCD308"}}>
-            {isElig?`✓ Eligible — #${rank}`:`📍 Posisi #${rank}`}
+            {isElig?`✓ Eligible #${rank}`:`📍 Posisi kamu #${rank}`}
           </div>
           <div style={{fontSize:12,fontWeight:700,color:WT}}>{fmt(myVal)} <span style={{fontSize:9,color:MT,fontWeight:400}}>{lbl}</span></div>
         </div>
         {!isElig&&gapToCutoff>0&&<>
-          <div style={{height:3,background:"rgba(255,255,255,0.06)",borderRadius:2,overflow:"hidden",marginBottom:5}}>
+          <div style={{height:3,background:"rgba(255,255,255,0.06)",borderRadius:2,overflow:"hidden",marginBottom:6}}>
             <div style={{height:"100%",borderRadius:2,background:"#FCD308",width:pct+"%",transition:"width .4s"}}/>
           </div>
-          <div style={{fontSize:10,color:DT}}>Butuh +{fmt(gapToCutoff)} {lbl} lagi untuk masuk top {winnerSlots}</div>
+          <div style={{fontSize:10,color:MT}}>
+            Butuh +{fmt(gapToCutoff)} {lbl} lagi untuk masuk top {winnerSlots}
+            {slotsFull&&<span style={{color:DT}}> · Slot penuh, terus tingkatkan untuk geser posisi</span>}
+          </div>
         </>}
       </div>
     );
   }
 
-  // Not in top 50
+  // Not in top - only show if slots not yet full (first-come-first-serve)
+  const filledPct=winnerSlots?Math.round(filledSlots/winnerSlots*100):0;
+  if(slotsFull)return null; // Slots full - no point showing "kamu belum masuk"
+
   const cutoff=entries[Math.min((winnerSlots||1)-1,entries.length-1)];
   const cutoffVal=cutoff?getVal(cutoff):0;
   return(
-    <div style={{margin:"12px 16px 0",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:"11px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
-      <div style={{fontSize:11,color:MT}}>📍 Kamu belum di top {entries.length}</div>
-      {cutoffVal>0&&<div style={{fontSize:11,color:DT,flexShrink:0}}>Butuh <span style={{color:Y,fontWeight:700}}>{fmt(cutoffVal)}</span> {lbl} untuk menang</div>}
+    <div style={{margin:"12px 16px 0",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:"12px 14px"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+        <div style={{fontSize:11,color:MT}}>📍 Kamu belum masuk leaderboard ini</div>
+        {winnerSlots&&<div style={{fontSize:10,color:filledSlots>0?"#FCD308":DT,flexShrink:0,fontWeight:600}}>{filledSlots}/{winnerSlots} slot terisi</div>}
+      </div>
+      {cutoffVal>0&&<div style={{fontSize:11,color:WT,fontWeight:600,marginBottom:5}}>
+        Butuh min <span style={{color:Y}}>{fmt(cutoffVal)}</span> {lbl} untuk bersaing
+      </div>}
+      <div style={{fontSize:10,color:DT,lineHeight:1.6}}>
+        ⚡ Sistem ini <span style={{color:MT,fontWeight:600}}>first come, first serve</span>: slot diberikan kepada {winnerSlots} kreator pertama yang memenuhi syarat. Segera capai targetmu sebelum slot penuh.
+      </div>
     </div>
   );
 }
@@ -587,7 +695,7 @@ function TierSection({ tier, entries, username, accentColor, selectedTier }) {
             </div>
             <div style={{ color: DT, fontSize: 11, marginLeft: 2, flexShrink: 0, display: "inline-block", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform .2s" }}>▾</div>
           </div>
-          {/* Eligibility mini-strip — always visible */}
+          {/* Eligibility mini-strip - always visible */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             <span style={{ fontSize: 9, color: accentColor, background: `${accentColor}14`, border: `1px solid ${accentColor}30`, borderRadius: 5, padding: "2px 7px" }}>
               GMV ≥ {idr(tier.minGMV)}
@@ -649,10 +757,10 @@ function EventSheet({event,username,globalLevel,onClose}){
   const lbKey=isL?event.lbKey:isW?`${event.lbPrefix}_w${selW}`:null;
   const rawEntries=lbKey?LB[lbKey]||[]:[];
   const mode=isL?(event.metric==="sessions"?"sessions":"gmv"):event.metric==="posts"?"posts":event.metric==="views"?"views":"gmv";
-  // Filter by campaign's allowed levels (mandatory — set by admin per campaign)
+  // Filter by campaign's allowed levels (mandatory - set by admin per campaign)
   const allowedLvls=parseLevels(event.creatorLevel);
   const lvlFiltered=allowedLvls.length>0?rawEntries.filter(e=>allowedLvls.includes(e.level)):rawEntries;
-  // Optional min thresholds — if set, only qualifying creators appear
+  // Optional min thresholds - if set, only qualifying creators appear
   // Level Up uses Gross GMV (e.grossGmv if available, else e.gmv as fallback)
   const isLU=event.type==="levelup";
   const threshFiltered=lvlFiltered.filter(e=>{
@@ -697,7 +805,7 @@ function EventSheet({event,username,globalLevel,onClose}){
             <button onClick={onClose} style={{flexShrink:0,background:C2,border:`1px solid ${LN}`,color:MT,borderRadius:8,width:30,height:30,cursor:"pointer",fontSize:15}}>✕</button>
           </div>
         </div>
-        {/* week tabs — ALL weeks so user can check past winners */}
+        {/* week tabs - ALL weeks so user can check past winners */}
         {isW&&(
           <div style={{padding:"10px 16px 4px",borderBottom:`1px solid ${LN}`}}>
             <div style={{fontSize:9,color:DT,letterSpacing:.5,textTransform:"uppercase",marginBottom:8}}>Pilih Minggu</div>
@@ -748,7 +856,7 @@ function EventSheet({event,username,globalLevel,onClose}){
               {/* Dynamic 2x2 grid for selected tier */}
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
                 {[
-                  {icon:"👤",label:"LEVEL KREATOR",val:t.creatorLevel||event.creatorLevel||"—",color:WT},
+                  {icon:"👤",label:"LEVEL KREATOR",val:t.creatorLevel||event.creatorLevel||"",color:WT},
                   {icon:"🏆",label:"SLOTS",val:`${t.slots} slot`,color:WT},
                   {icon:"🎁",label:"PRIZE",val:prizeVal,color:prizeColor},
                   {icon:"📈",label:"MIN GMV",val:idr(t.minGMV)+(t.maxGMV?` – ${idr(t.maxGMV)}`:"+"),color:WT},
@@ -778,7 +886,7 @@ function EventSheet({event,username,globalLevel,onClose}){
                 {icon:"👤",label:"LEVEL KREATOR",val:event.creatorLevel||"Semua Level"},
                 {icon:"🏆",label:"SLOTS",val:event.maxSlots},
                 {icon:"🎁",label:"PRIZE",val:prizeStr},
-                {icon:"📅",label:"PERIODE",val:isW&&curWk?`${curWk.s} – ${curWk.e}`:event.start||"—"},
+                {icon:"📅",label:"PERIODE",val:isW&&curWk?`${curWk.s} s/d ${curWk.e}`:event.start||""},
               ].map((s,i)=>(
                 <div key={i} style={{background:C2,border:`1px solid ${LN}`,borderRadius:12,padding:"13px"}}>
                   <div style={{fontSize:19,marginBottom:7}}>{s.icon}</div>
@@ -793,7 +901,7 @@ function EventSheet({event,username,globalLevel,onClose}){
             {isL&&event.minSessions>0&&<div style={{background:C2,border:`1px solid ${LN}`,borderRadius:10,padding:"9px 12px",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={{fontSize:11,color:MT}}>Min Sesi</span><span style={{fontSize:12,fontWeight:800,color:WT}}>{event.minSessions} sesi</span></div>}
           {isL&&<div style={{background:"rgba(252,211,8,0.06)",border:"1px solid rgba(252,211,8,0.18)",borderRadius:9,padding:"8px 12px",marginBottom:6,fontSize:11,color:"rgba(252,211,8,0.85)",lineHeight:1.6}}>⏱ <span style={{fontWeight:700}}>1 sesi = min 2 jam live.</span> Sesi di bawah 2 jam tidak dihitung.</div>}
             {st.total&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6}}>
-              {[{l:"CREATORS",v:st.total||"—"},{l:"ELIGIBLE",v:st.eligible||"—"},{l:"FILLED",v:st.filled||"—",hi:true},{l:"PER WINNER",v:event.prizeType==="item"?"Item":idr(event.prizeAmount||0)}].map((s,i)=>(
+              {[{l:"CREATORS",v:st.total||""},{l:"ELIGIBLE",v:st.eligible||""},{l:"FILLED",v:st.filled||"",hi:true},{l:"PER WINNER",v:event.prizeType==="item"?"Item":idr(event.prizeAmount||0)}].map((s,i)=>(
                 <div key={i} style={{background:BG,border:`1px solid ${LN}`,borderRadius:9,padding:"8px 5px",textAlign:"center"}}>
                   <div style={{fontSize:8,color:MT,textTransform:"uppercase",marginBottom:3,lineHeight:1.3,letterSpacing:.2}}>{s.l}</div>
                   <div style={{fontSize:11,fontWeight:800,color:s.hi?acc:WT,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.v}</div>
@@ -802,7 +910,7 @@ function EventSheet({event,username,globalLevel,onClose}){
             </div>}
           </>)}
         </div>
-        {/* monthly tier — TAB system, only selected tier's leaderboard shows */}
+        {/* monthly tier - TAB system, only selected tier's leaderboard shows */}
         {isM&&(()=>{
           const allMonthly=LB[event.tiers[event.tiers.length-1].lbKey]||[];
           const allFlat=[...allMonthly];
@@ -895,7 +1003,7 @@ function EventSheet({event,username,globalLevel,onClose}){
             </div>
           );
         })()}
-        {/* weekly/live flat leaderboard — no level filter, level is admin-set per campaign */}
+        {/* weekly/live flat leaderboard - no level filter, level is admin-set per campaign */}
         {(isW||isL)&&<>
           {/* week prize info for currently selected week */}
           {isW&&curWk&&(
@@ -914,7 +1022,7 @@ function EventSheet({event,username,globalLevel,onClose}){
         {/* Disclaimer - only inside event sheet */}
         <div style={{margin:"16px 16px 8px",background:"rgba(252,211,8,0.05)",border:"1px solid rgba(252,211,8,0.15)",borderRadius:12,padding:"12px 16px",textAlign:"center"}}>
           <div style={{fontSize:10,color:"rgba(252,211,8,0.7)",lineHeight:1.65}}>
-            ⚠️ Data bersifat sementara dan dapat berubah.<br/>
+            ⚠️ Data diperbarui dengan <span style={{fontWeight:700}}>delay 2 hari</span> dari aktivitas aktual.<br/>
             Data final mengacu hasil validasi TikTok di akhir bulan.
           </div>
         </div>
@@ -958,7 +1066,7 @@ function EventCard({event,onOpen}){
         </div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:6,marginTop:4,flexWrap:"wrap"}}>
-        {/* Level badges — per campaign, admin-set */}
+        {/* Level badges - per campaign, admin-set */}
         {parseLevels(event.creatorLevel).map(lv=>(
           <span key={lv} style={{fontSize:9,fontWeight:700,color:lvC(lv),background:`${lvC(lv)}18`,border:`1px solid ${lvC(lv)}33`,borderRadius:5,padding:"2px 6px"}}>{lv}</span>
         ))}
@@ -1127,13 +1235,13 @@ function TierEditor({tiers,onChange}){
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <div style={{background:`${GD}22`,border:`1px solid ${GD}44`,borderRadius:6,padding:"3px 9px",fontSize:11,fontWeight:700,color:GD}}>Tier {t.tier}</div>
-              {i===tiers.length-1&&<span style={{fontSize:9,color:DT}}>top tier — no max GMV</span>}
+              {i===tiers.length-1&&<span style={{fontSize:9,color:DT}}>top tier, tanpa batas max GMV</span>}
             </div>
             <button onClick={()=>del(i)} style={{background:"none",border:"none",color:"#FF4444",cursor:"pointer",fontSize:13,padding:"2px 6px"}}>✕</button>
           </div>
           <FGrid cols={2}>
             <FRow label="Min GMV (IDR)"><FInp val={t.minGMV} onChange={v=>upd(i,"minGMV",v)} type="number" placeholder="0"/></FRow>
-            <FRow label="Max GMV (IDR, eksklusif)" hint={i===tiers.length-1?"—no max":""}><FInp val={t.maxGMV||0} onChange={v=>upd(i,"maxGMV",v===0||v===""?null:Number(v))} type="number" placeholder="0"/></FRow>
+            <FRow label="Max GMV (IDR, eksklusif)" hint={i===tiers.length-1?"tanpa batas":""}><FInp val={t.maxGMV||0} onChange={v=>upd(i,"maxGMV",v===0||v===""?null:Number(v))} type="number" placeholder="0"/></FRow>
             <FRow label="Min Merchants (Unique POIs)"><FInp val={t.minMerchants||0} onChange={v=>upd(i,"minMerchants",v)} type="number" placeholder="0"/></FRow>
             <FRow label="Slots (Winners)"><FInp val={t.slots} onChange={v=>upd(i,"slots",v)} type="number" placeholder="5"/></FRow>
             <FRow label="Prize Type"><FSel val={t.prizeType} onChange={v=>upd(i,"prizeType",v)} opts={[["cash","Cash (IDR)"],["item","Hadiah Fisik"]]}/></FRow>
@@ -1178,7 +1286,7 @@ function WeekEditor({weeks,onChange}){
   );
 }
 
-// ── Campaign Form — clean tabbed ──────────────────────────────────────────────
+// ── Campaign Form - clean tabbed ──────────────────────────────────────────────
 function CampaignForm({initial,onSave,onCancel}){
   const defWeeks=[
     {w:1,s:"1 Jun",e:"7 Jun",  st:weekSt("1 Jun","7 Jun"),  prizeType:"cash",prizeAmount:150000,slots:5,creatorLevel:"Lv.1"},
@@ -1259,7 +1367,7 @@ function CampaignForm({initial,onSave,onCancel}){
               <FSel val={f.metric} onChange={v=>set("metric",v)} opts={[["posts","📝 Posts"],["gmv","💰 GMV"],["views","👁 Views"],["mixed","📊 GMV + Posts"],["sessions","🔴 Live Sessions"]]}/>
             </FRow>}
             {(f.metric==="gmv"||f.metric==="mixed"||isLive)&&<FRow label="GMV Source">
-              <FSel val={f.gmvSource||"nett"} onChange={v=>set("gmvSource",v)} opts={[["nett","Nett — Redemption amount"],["gross","Gross — Sales value"]]}/>
+              <FSel val={f.gmvSource||"nett"} onChange={v=>set("gmvSource",v)} opts={[["nett","Nett (Redemption amount)"],["gross","Gross (Sales value)"]]}/>
             </FRow>}
             {(isWeekly||isMonthly)&&<FRow label="Period">
               <FSel val={f.period||"monthly"} onChange={v=>set("period",v)} opts={[["monthly","Monthly"],["weekly","Weekly"]]}/>
@@ -1294,7 +1402,7 @@ function CampaignForm({initial,onSave,onCancel}){
               {/* Gross GMV note */}
               <div style={{background:"rgba(255,165,0,0.08)",border:"1px solid rgba(255,165,0,0.3)",borderRadius:8,padding:"8px 12px",marginBottom:14,fontSize:11,color:"#FFA500",lineHeight:1.6}}>
                 📊 <span style={{fontWeight:700}}>GMV Source: Gross (Sales Value)</span><br/>
-                <span style={{fontSize:10,color:"rgba(255,165,0,0.7)"}}>Level Up campaign selalu menggunakan nilai Gross GMV — bukan Nett/Redemption amount.</span>
+                <span style={{fontSize:10,color:"rgba(255,165,0,0.7)"}}>Level Up campaign selalu menggunakan nilai Gross GMV, bukan Nett/Redemption amount.</span>
               </div>
               <FGrid cols={2}>
                 <FRow label="Dari Level" hint="level awal kreator">
@@ -1313,8 +1421,8 @@ function CampaignForm({initial,onSave,onCancel}){
                   Kreator <span style={{color:lvC(f.levelFrom),fontWeight:700}}>{f.levelFrom}</span> → naik ke <span style={{color:lvC(f.levelTo),fontWeight:700}}>{f.levelTo}</span> selama periode campaign = pemenang.
                 </div>
               )}
-              {/* Min thresholds — optional eligibility gates */}
-              <div style={{fontSize:11,fontWeight:600,color:MT,marginBottom:8,marginTop:4}}>Min Eligibility <span style={{fontSize:10,color:DT,fontWeight:400}}>(opsional — 0 = tidak ada syarat)</span></div>
+              {/* Min thresholds - optional eligibility gates */}
+              <div style={{fontSize:11,fontWeight:600,color:MT,marginBottom:8,marginTop:4}}>Min Eligibility <span style={{fontSize:10,color:DT,fontWeight:400}}>(opsional, 0 = tidak ada syarat)</span></div>
               <FGrid cols={3}>
                 <FRow label="Min Gross GMV (IDR)"><FInp val={f.minGMV||0} onChange={v=>set("minGMV",v)} type="number" placeholder="0"/></FRow>
                 <FRow label="Min Posts"><FInp val={f.minPosts||0} onChange={v=>set("minPosts",v)} type="number" placeholder="0"/></FRow>
@@ -1463,8 +1571,8 @@ function AdminPanel({adminUser,onLogout}){
           {[{id:"events",icon:"📋",label:"Events"},{id:"live",icon:"🔴",label:"Live"},{id:"banners",icon:"🖼",label:"Banners"}].map(t=>(
             <button key={t.id} onClick={()=>{setTab(t.id);setFilterType("all");}} style={{flex:1,background:"none",border:"none",cursor:"pointer",padding:"9px 6px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,position:"relative"}}>
               <span style={{fontSize:14}}>{t.icon}</span>
-              <span style={{fontSize:10,fontWeight:tab===t.id?700:400,color:tab===t.id?WT:MT}}>{t.label}</span>
-              {tab===t.id&&<div style={{position:"absolute",bottom:0,left:"20%",right:"20%",height:2,background:Y,borderRadius:"2px 2px 0 0"}}/>}
+              <span style={{fontSize:10,fontWeight:activeTab===t.id?700:400,color:activeTab===t.id?WT:MT}}>{t.label}</span>
+              {activeTab===t.id&&<div style={{position:"absolute",bottom:0,left:"20%",right:"20%",height:2,background:Y,borderRadius:"2px 2px 0 0"}}/>}
             </button>
           ))}
         </div>
@@ -1485,7 +1593,7 @@ function AdminPanel({adminUser,onLogout}){
                   {c.bannerUrl&&<div style={{fontSize:10,color:"#60A5FA",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.bannerUrl}</div>}
                   {!c.bannerUrl&&<div style={{fontSize:10,color:DT}}>Tidak ada banner URL</div>}
                 </div>
-                <div style={{fontSize:10,color:MT,flexShrink:0}}>#{c.sortOrder||"—"}</div>
+                <div style={{fontSize:10,color:MT,flexShrink:0}}>#{c.sortOrder||""}</div>
               </div>
             ))}
             {campaigns.filter(c=>c.status==="live"||c.isActive).length===0&&<div style={{fontSize:12,color:MT,textAlign:"center",padding:"12px 0"}}>Belum ada campaign aktif</div>}
@@ -1548,7 +1656,7 @@ function AdminPanel({adminUser,onLogout}){
                     {c.period&&c.type==="live"&&<span style={{fontSize:9,color:tc,background:`${tc}14`,border:`1px solid ${tc}33`,borderRadius:4,padding:"2px 6px"}}>{c.period}</span>}
                     <span style={{fontSize:9,color:isActive?"#16A34A":"#FF4444",fontWeight:600}}>● {isActive?"Aktif":"Nonaktif"}</span>
                     {c.city&&<span style={{fontSize:9,color:"#60A5FA"}}>📍{c.city}</span>}
-                    <span style={{fontSize:9,color:DT}}>#{c.sortOrder||"—"}</span>
+                    <span style={{fontSize:9,color:DT}}>#{c.sortOrder||""}</span>
                   </div>
                   <div style={{fontSize:14,fontWeight:700,color:WT,marginBottom:7}}>{c.icon} {c.label}</div>
                   <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:10}}>
@@ -1621,9 +1729,7 @@ export default function App(){
   }
   if(!ready)return <div style={{minHeight:"100svh",background:BG}}/>;
   if(!user)return <Onboarding onDone={u=>{setUser(u);setTab("weekly");}}/>;
-  const TABS=[{id:"weekly",label:"Weekly",icon:"🗓"},{id:"monthly",label:"Monthly",icon:"📅"},{id:"live",label:"Livestreaming",icon:"📺"}];
-
-  // Merge hardcoded events + admin-created campaigns from localStorage
+  // Only show tabs that have campaigns (About always shows)
   // Exclude built-in events that admin has deleted
   const deletedBuiltins=(()=>{try{return JSON.parse(localStorage.getItem("ag_deleted")||"[]");}catch(e){return[];}})();
   const adminCampaigns=(loadCampaigns()||[]).map(c=>({
@@ -1660,6 +1766,33 @@ export default function App(){
     return true;
   });
   const wEvs=getEvs("weekly");const mEvs=getEvs("monthly");const lEvs=getEvs("live");
+
+
+  // Hide tabs that have no campaigns for the CURRENT filter (industry + level)
+  const ALL_TABS=[{id:"weekly",label:"Weekly",icon:"🗓"},{id:"monthly",label:"Monthly",icon:"📅"},{id:"live",label:"Livestreaming",icon:"📺"},{id:"about",label:"Tentang",icon:"ℹ️"}];
+  const anyWeekly=ALL_ACTIVE.some(e=>e.type==="weekly"&&e.weeks?.some(w=>w.st==="live"));
+  const anyMonthly=ALL_ACTIVE.some(e=>e.type==="monthly"&&e.status==="live");
+  const anyLive=ALL_ACTIVE.some(e=>e.type==="live"&&(e.isActive??true));
+  const tabHasCampaigns={weekly:anyWeekly,monthly:anyMonthly,live:anyLive,about:true};
+  const TABS=ALL_TABS.filter(t=>tabHasCampaigns[t.id]);
+  const activeTab=tabHasCampaigns[tab]?tab:(TABS[0]?.id||"about");
+  if(activeTab!==tab){setTab(activeTab);}
+
+  // Compute which industries & levels have campaigns for the current tab
+  const getAvailable=(type)=>{
+    const evs=ALL_ACTIVE.filter(e=>{
+      if(e.type!==type)return false;
+      if(type==="weekly"&&!e.weeks?.some(w=>w.st==="live"))return false;
+      if(type==="monthly"&&e.status!=="live")return false;
+      if(type==="live"&&!e.isActive)return false;
+      return true;
+    });
+    const inds=[...new Set(evs.map(e=>e.industry).filter(Boolean))];
+    const lvls=[...new Set(evs.flatMap(e=>parseLevels(e.creatorLevel)))];
+    return{inds,lvls};
+  };
+  const avail=getAvailable(activeTab==="live"?"live":activeTab==="monthly"?"monthly":"weekly");
+
   return(
     <div style={{minHeight:"100svh",background:BG,fontFamily:"-apple-system,'Nunito','SF Pro Text','Segoe UI',sans-serif",color:WT,maxWidth:480,margin:"0 auto",WebkitFontSmoothing:"antialiased"}}>
       <style>{`*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.15}} @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}} button:active{opacity:.65} ::-webkit-scrollbar{display:none} input::placeholder{color:#3a3a3a}`}</style>
@@ -1675,8 +1808,8 @@ export default function App(){
           {TABS.map(t=>(
             <button key={t.id} onClick={()=>{setTab(t.id);if(t.id==="live")setFilter(f=>({...f,industry:"dining"}));}} style={{flex:1,background:"none",border:"none",cursor:"pointer",padding:"9px 6px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,position:"relative"}}>
               <span style={{fontSize:15}}>{t.icon}</span>
-              <span style={{fontSize:10,fontWeight:tab===t.id?700:400,color:tab===t.id?WT:MT,transition:"color .15s"}}>{t.label}</span>
-              {tab===t.id&&<div style={{position:"absolute",bottom:0,left:"18%",right:"18%",height:2,background:Y,borderRadius:"2px 2px 0 0"}}/>}
+              <span style={{fontSize:10,fontWeight:activeTab===t.id?700:400,color:activeTab===t.id?WT:MT,transition:"color .15s"}}>{t.label}</span>
+              {activeTab===t.id&&<div style={{position:"absolute",bottom:0,left:"18%",right:"18%",height:2,background:Y,borderRadius:"2px 2px 0 0"}}/>}
             </button>
           ))}
         </div>
@@ -1685,22 +1818,116 @@ export default function App(){
       <div style={{animation:"up .18s ease"}}>
         <div style={{padding:"13px 16px 4px",fontSize:13,color:MT}}>Hai, <span style={{color:WT,fontWeight:600}}>{user.username}</span> 👋</div>
         <BannerCarousel onOpen={setSheet}/>
-        {tab==="live"
-          ?<LiveLevelFilter filter={filter} setFilter={setFilter}/>
-          :<FilterBar filter={filter} setFilter={setFilter}/>}
+        {activeTab==="live"
+          ?null
+          :activeTab!=="about"&&<FilterBar filter={filter} setFilter={setFilter} availableInds={avail.inds} availableLvls={avail.lvls}/>}
         <div style={{padding:"10px 16px 40px"}}>
-          {tab==="weekly"&&(<>
+          {activeTab==="weekly"&&(<>
             <div style={{fontSize:10,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:12,marginTop:8}}>Campaign Mingguan · Juni 2026</div>
             {wEvs.length===0?<EmptyState level={filter.level}/>:wEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
           </>)}
-          {tab==="monthly"&&(<>
+          {activeTab==="monthly"&&(<>
             <div style={{fontSize:10,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:12,marginTop:8}}>Campaign Bulanan · Juni 2026</div>
             {mEvs.length===0?<EmptyState level={filter.level}/>:mEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
           </>)}
-          {tab==="live"&&(<>
+          {activeTab==="live"&&(<>
             <div style={{fontSize:10,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:12,marginTop:8}}>Campaign Live Streaming · Juni 2026</div>
             {lEvs.length===0?<EmptyState level={filter.level}/>:lEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
           </>)}
+          {activeTab==="about"&&(
+            <div style={{paddingTop:8,paddingBottom:40}}>
+              {/* Hero */}
+              <div style={{background:`linear-gradient(135deg,#1a1200 0%,#0d0d0d 100%)`,border:`1px solid ${Y}22`,borderRadius:16,padding:"20px 18px",marginBottom:12,textAlign:"center"}}>
+                <div style={{fontSize:28,marginBottom:8}}>🏆</div>
+                <div style={{fontSize:18,fontWeight:900,color:Y,marginBottom:6}}>AdtreeGO Leaderboard</div>
+                <div style={{fontSize:12,color:MT,lineHeight:1.7}}>Platform reward resmi untuk kreator TikTok GO yang bermitra dengan AdtreeGO. Setiap campaign dirancang untuk menghargai performa terbaik kamu.</div>
+              </div>
+
+              {/* How it works */}
+              <div style={{background:C1,border:`1px solid ${LN}`,borderRadius:14,padding:"16px 18px",marginBottom:10}}>
+                <div style={{fontSize:11,fontWeight:700,color:Y,letterSpacing:.5,textTransform:"uppercase",marginBottom:14}}>Cara Kerja</div>
+                {[
+                  {icon:"1️⃣",title:"Login dengan Uniq ID",desc:"Masukkan Uniq ID TikTok kamu. Sistem akan menandai posisimu di setiap leaderboard secara otomatis."},
+                  {icon:"2️⃣",title:"Pilih Campaign",desc:"Setiap campaign punya metrik berbeda, yaitu berdasarkan jumlah post, GMV, views, atau live session."},
+                  {icon:"3️⃣",title:"Capai Target",desc:"Penuhi syarat minimum dan masuk ke zona eligible. Sistem first-come-first-serve: slot diberikan kepada kreator yang pertama memenuhi syarat."},
+                  {icon:"4️⃣",title:"Menangkan Hadiah",desc:"Kreator yang masuk zona eligible di akhir periode campaign akan menerima hadiah sesuai ketentuan campaign."},
+                ].map((s,i)=>(
+                  <div key={i} style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:i<3?14:0}}>
+                    <div style={{fontSize:20,flexShrink:0,marginTop:1}}>{s.icon}</div>
+                    <div>
+                      <div style={{fontSize:13,fontWeight:700,color:WT,marginBottom:3}}>{s.title}</div>
+                      <div style={{fontSize:12,color:MT,lineHeight:1.6}}>{s.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Campaign types */}
+              <div style={{background:C1,border:`1px solid ${LN}`,borderRadius:14,padding:"16px 18px",marginBottom:10}}>
+                <div style={{fontSize:11,fontWeight:700,color:Y,letterSpacing:.5,textTransform:"uppercase",marginBottom:14}}>Tipe Campaign</div>
+                {[
+                  {icon:"🗓",label:"Weekly",color:"#FCD308",desc:"Campaign per minggu. Setiap minggu reset. Kamu bisa menang di lebih dari satu minggu."},
+                  {icon:"📅",label:"Monthly",color:GD,desc:"Campaign bulanan dengan sistem tier. Semakin tinggi GMV-mu, semakin besar hadiahnya."},
+                  {icon:"📺",label:"Livestreaming",color:"#FF4D4F",desc:"Campaign khusus live streaming. Diukur dari GMV nett atau jumlah sesi live valid (min 2 jam/sesi)."},
+                  {icon:"⬆️",label:"Level Up",color:"#A78BFA",desc:"Hadiah untuk kreator yang berhasil naik level selama periode campaign. Menggunakan Gross GMV."},
+                ].map((t,i)=>(
+                  <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:i<3?12:0}}>
+                    <div style={{width:36,height:36,borderRadius:10,background:`${t.color}14`,border:`1px solid ${t.color}33`,
+                      display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>{t.icon}</div>
+                    <div>
+                      <div style={{fontSize:12,fontWeight:700,color:t.color,marginBottom:2}}>{t.label}</div>
+                      <div style={{fontSize:11,color:MT,lineHeight:1.5}}>{t.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Industries */}
+              <div style={{background:C1,border:`1px solid ${LN}`,borderRadius:14,padding:"16px 18px",marginBottom:10}}>
+                <div style={{fontSize:11,fontWeight:700,color:Y,letterSpacing:.5,textTransform:"uppercase",marginBottom:14}}>Industri</div>
+                {[
+                  {icon:"🍽",label:"Dinings",desc:"Restoran, kafe, warung makan, kuliner lokal."},
+                  {icon:"🏨",label:"Accommodations",desc:"Hotel, villa, homestay, penginapan."},
+                  {icon:"🎯",label:"Things to Do",desc:"Wisata, atraksi, aktivitas, hiburan."},
+                ].map((ind,i)=>(
+                  <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:i<2?10:0}}>
+                    <span style={{fontSize:22}}>{ind.icon}</span>
+                    <div>
+                      <div style={{fontSize:13,fontWeight:700,color:WT,marginBottom:1}}>{ind.label}</div>
+                      <div style={{fontSize:11,color:MT}}>{ind.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Important notes */}
+              <div style={{background:"rgba(252,211,8,0.04)",border:`1px solid ${Y}22`,borderRadius:14,padding:"16px 18px",marginBottom:10}}>
+                <div style={{fontSize:11,fontWeight:700,color:Y,letterSpacing:.5,textTransform:"uppercase",marginBottom:12}}>⚠️ Ketentuan Penting</div>
+                {[
+                  "Data leaderboard diperbarui dengan delay 2 hari dari aktivitas aktual. Data final mengacu pada validasi resmi TikTok di akhir bulan.",
+                  "Sistem first-come-first-serve: slot eligible diberikan kepada kreator yang pertama memenuhi syarat, bukan yang tertinggi di akhir.",
+                  "1 sesi live valid = minimum 2 jam live streaming aktif.",
+                  "Level Up campaign menggunakan Gross GMV (nilai penjualan), bukan Nett/Redemption.",
+                  "Campaign per industri. Kamu hanya bisa ikut campaign sesuai industri merchant yang kamu promosikan.",
+                ].map((note,i)=>(
+                  <div key={i} style={{display:"flex",gap:8,marginBottom:i<4?10:0}}>
+                    <span style={{color:Y,flexShrink:0,fontSize:11}}>•</span>
+                    <div style={{fontSize:11,color:MT,lineHeight:1.6}}>{note}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Contact */}
+              <div style={{background:C1,border:`1px solid ${LN}`,borderRadius:14,padding:"16px 18px"}}>
+                <div style={{fontSize:11,fontWeight:700,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:10}}>Bantuan & Kontak</div>
+                <div style={{fontSize:12,color:MT,lineHeight:1.7}}>Ada pertanyaan tentang campaign atau hadiah? Hubungi tim AdtreeGO melalui:</div>
+                <div style={{marginTop:10,fontSize:12,color:WT,lineHeight:1.8}}>
+                  <div>🌐 adtreedigital.cloud</div>
+                  <div>📧 go@adtreedigital.cloud</div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div style={{borderTop:`1px solid ${LN}`,padding:"16px 0 32px",textAlign:"center"}}>
