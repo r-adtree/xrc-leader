@@ -90,6 +90,68 @@ const WEEKS=[
   {w:3,s:"16 Jun",e:"23 Jun",st:weekSt("16 Jun","23 Jun")},
   {w:4,s:"24 Jun",e:"31 Jun",st:weekSt("24 Jun","31 Jun")},
 ];
+// ─── DB FIELD MAPPING ─────────────────────────────────────────────────────────
+// App field         → DB table.column
+// event.id          → events.id / live_events.id
+// event.key         → events.event_key / live_events.event_key
+// event.label       → events.event_name / live_events.event_name
+// event.icon        → events.icon
+// event.type        → events.challenge_type ("weekly","monthly","levelup") / live_events (always "live")
+// event.industry    → events.industry ("dining","accom","ttd")
+// event.metric      → events.rank_by ("posts","gmv","views","sessions")
+// event.gmvSource   → events.gmv_source ("nett","gross")
+// event.creatorLevel→ events.creator_level
+// event.city        → events.creator_city
+// event.minPosts    → events.min_posts
+// event.minGMV      → events.min_gmv_idr
+// event.minViews    → events.min_views
+// event.minSessions → live_events.min_sessions
+// event.maxSlots    → events.max_slots / live_events.max_slots
+// event.prizeType   → events.prize_type ("cash","item","pct")
+// event.prizeAmount → events.prize_idr / live_events.prize_idr
+// event.prizeItem   → events.prize_item
+// event.isActive    → events.is_active / live_events.is_active
+// event.status      → derived from events.is_active + dates
+// event.startDate   → events.start_date / live_events.start_date
+// event.endDate     → events.end_date / live_events.end_date
+// event.sortOrder   → events.sort_order / live_events.sort_order
+// event.desc        → events.description
+// event.accent      → events.accent / live_events.accent
+// event.winType     → live_events.win_type
+// event.requireLvlUp→ events.requires_level_up
+// event.levelFrom   → derived from creator_level_log.previous_level
+// event.levelTo     → derived from creator_level_log.level
+// event.gmvSource   → events.gmv_source / live_events.gmv_source
+// week.w            → event_weeks.week_number
+// week.s            → event_weeks.start_date
+// week.e            → event_weeks.end_date
+// week.slots        → event_weeks.max_slots
+// week.prizeAmount  → event_weeks.prize_idr
+// week.prizeItem    → event_weeks.prize_item
+// week.prizeType    → event_weeks.prize_type
+// tier.tier         → event_tiers.tier_number
+// tier.minGMV       → event_tiers.min_gmv_idr
+// tier.maxGMV       → event_tiers.max_gmv_idr
+// tier.slots        → event_tiers.max_slots
+// tier.prizeAmount  → event_tiers.prize_idr
+// tier.prizeItem    → event_tiers.prize_item
+// tier.prizeType    → event_tiers.prize_type
+// tier.minMerchants → event_tiers.min_merchants
+// banner.image_url  → banners.image_url
+// banner.sort_order → banners.sort_order
+// banner.type       → banners.type
+// banner.caption    → banners.caption
+// LB entry.name     → tiktok_go_video_summary.author_id
+// LB entry.level    → tiktok_go_video_summary.creator_level
+// LB entry.city     → tiktok_go_video_summary.creator_city
+// LB entry.posts    → tiktok_go_video_summary.total_post
+// LB entry.gmv      → tiktok_go_video_summary.redemption_amount (nett) or gmv_gross_idr
+// LB entry.views    → tiktok_go_video_summary.poi_vv
+// LB live.sessions  → COUNT(tiktok_live_sessions) WHERE live_duration_hours >= 2
+// LB live.gmv       → SUM(tiktok_live_sessions.gmv_nett_idr) or gmv_gross_idr
+// level_up          → creator_level_log: author_id, level (new), previous_level, observed_at
+// ─────────────────────────────────────────────────────────────────────────────
+
 const ALL_EVENTS=[
   // ── Dinings ──
   {id:70,key:"konten-terbanyak",  icon:"🎬",label:"Konten Terbanyak",          type:"weekly",metric:"posts",industry:"dining",creatorLevel:"Lv.1 & Lv.2",minPosts:15,minGMV:0,       maxSlots:25,prizeType:"cash",prizeAmount:150000, weekPrizes:{1:"Rp 150rb",2:"Rp 150rb",3:"Rp 150rb",4:"Rp 150rb"},desc:"Raih 15 post minimum per minggu. 25 kreator Dinings teratas menangkan hadiah tunai.",weeks:WEEKS,lbPrefix:"70"},
@@ -1204,9 +1266,33 @@ const FCheck=({checked,onChange,label})=>(
   </label>
 );
 
-// ── Level Picker ─────────────────────────────────────────────────────────────
+// ── List Paste Editor (brands/SKUs/campaigns) ─────────────────────────────────
+function ListPasteEditor({value,onChange,label,placeholder,hint}){
+  const items=(value||[]);
+  const [raw,setRaw]=useState(items.join('\n'));
+  const sync=(v)=>{
+    setRaw(v);
+    const parsed=v.split('\n').map(s=>s.trim()).filter(Boolean);
+    onChange(parsed);
+  };
+  return(
+    <div style={{marginBottom:16}}>
+      <FLabel hint={hint}>{label}</FLabel>
+      <textarea value={raw} onChange={e=>sync(e.target.value)} rows={5} placeholder={placeholder}
+        style={{...FS,resize:"vertical",fontFamily:"monospace",fontSize:12}}/>
+      <div style={{fontSize:10,color:DT,marginTop:4}}>{items.length} item{items.length!==1?"s":""} · satu per baris</div>
+    </div>
+  );
+}
+
+// ── Level Picker (updated with all combos) ────────────────────────────────────
 function LevelPicker({value,onChange,label="Level Kreator"}){
-  const opts=[["Semua Level","Semua"],["Lv.1","L1"],["Lv.2","L2"],["Lv.3","L3"],["Lv.4","L4"],["Lv.1 & Lv.2","L1+L2"],["Lv.3 & Lv.4","L3+L4"]];
+  const opts=[
+    ["Semua Level","Semua"],
+    ["Lv.1","L1"],["Lv.2","L2"],["Lv.3","L3"],["Lv.4","L4"],
+    ["Lv.1 & Lv.2","L1+L2"],["Lv.2 & Lv.3","L2+L3"],["Lv.3 & Lv.4","L3+L4"],
+    ["Lv.1 & Lv.2 & Lv.3","L1+L2+L3"],["Lv.2 & Lv.3 & Lv.4","L2+L3+L4"],
+  ];
   return(
     <div style={{marginBottom:16}}>
       <FLabel>{label}</FLabel>
@@ -1222,9 +1308,10 @@ function LevelPicker({value,onChange,label="Level Kreator"}){
   );
 }
 
-// ── Tier Editor ───────────────────────────────────────────────────────────────
-function TierEditor({tiers,onChange}){
-  const newTier=(n)=>({tier:n,minGMV:0,maxGMV:null,slots:5,prizeType:"cash",prizeAmount:500000,prizeItem:"",creatorLevel:"Lv.1",minMerchants:0,lbKey:`t${n}`});
+// ── Universal Tier Editor (works for any campaign type) ───────────────────────
+function TierEditor({tiers,onChange,metricLabel="GMV"}){
+  const isGmv=metricLabel==="GMV";
+  const newTier=(n)=>({tier:n,minVal:0,maxVal:null,slots:5,prizeType:"cash",prizeAmount:500000,prizeItem:"",creatorLevel:"Semua Level",minMerchants:0,lbKey:`t${n}`});
   const add=()=>onChange([...tiers,newTier(tiers.length+1)]);
   const del=(i)=>onChange(tiers.filter((_,j)=>j!==i).map((t,j)=>({...t,tier:j+1,lbKey:`t${j+1}`})));
   const upd=(i,k,v)=>onChange(tiers.map((t,j)=>j===i?{...t,[k]:v}:t));
@@ -1235,21 +1322,23 @@ function TierEditor({tiers,onChange}){
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <div style={{background:`${GD}22`,border:`1px solid ${GD}44`,borderRadius:6,padding:"3px 9px",fontSize:11,fontWeight:700,color:GD}}>Tier {t.tier}</div>
-              {i===tiers.length-1&&<span style={{fontSize:9,color:DT}}>top tier, tanpa batas max GMV</span>}
+              {i===tiers.length-1&&<span style={{fontSize:9,color:DT}}>top tier, tanpa batas max</span>}
             </div>
             <button onClick={()=>del(i)} style={{background:"none",border:"none",color:"#FF4444",cursor:"pointer",fontSize:13,padding:"2px 6px"}}>✕</button>
           </div>
           <FGrid cols={2}>
-            <FRow label="Min GMV (IDR)"><FInp val={t.minGMV} onChange={v=>upd(i,"minGMV",v)} type="number" placeholder="0"/></FRow>
-            <FRow label="Max GMV (IDR, eksklusif)" hint={i===tiers.length-1?"tanpa batas":""}><FInp val={t.maxGMV||0} onChange={v=>upd(i,"maxGMV",v===0||v===""?null:Number(v))} type="number" placeholder="0"/></FRow>
-            <FRow label="Min Merchants (Unique POIs)"><FInp val={t.minMerchants||0} onChange={v=>upd(i,"minMerchants",v)} type="number" placeholder="0"/></FRow>
-            <FRow label="Slots (Winners)"><FInp val={t.slots} onChange={v=>upd(i,"slots",v)} type="number" placeholder="5"/></FRow>
-            <FRow label="Prize Type"><FSel val={t.prizeType} onChange={v=>upd(i,"prizeType",v)} opts={[["cash","Cash (IDR)"],["item","Hadiah Fisik"]]}/></FRow>
-            <FRow label={t.prizeType==="item"?"Nama Hadiah":"Prize Amount (IDR)"}>
-              {t.prizeType==="item"?<FInp val={t.prizeItem} onChange={v=>upd(i,"prizeItem",v)} placeholder="iPhone 17 Pro"/>:<FInp val={t.prizeAmount} onChange={v=>upd(i,"prizeAmount",v)} type="number" placeholder="0"/>}
+            <FRow label={`Min ${metricLabel}`}><FInp val={t.minVal||t.minGMV||0} onChange={v=>upd(i,"minVal",v)} type="number" placeholder="0"/></FRow>
+            <FRow label={`Max ${metricLabel}`} hint={i===tiers.length-1?"tanpa batas":""}><FInp val={t.maxVal||t.maxGMV||0} onChange={v=>upd(i,"maxVal",v===0?null:Number(v))} type="number" placeholder="0"/></FRow>
+            <FRow label="Slots"><FInp val={t.slots} onChange={v=>upd(i,"slots",v)} type="number" placeholder="5"/></FRow>
+            <FRow label="Min Merchants/POIs"><FInp val={t.minMerchants||0} onChange={v=>upd(i,"minMerchants",v)} type="number" placeholder="0"/></FRow>
+            <FRow label="Prize Type"><FSel val={t.prizeType} onChange={v=>upd(i,"prizeType",v)} opts={[["cash","💵 Cash (IDR)"],["item","🎁 Hadiah Fisik"],["pct","% dari GMV"]]}/></FRow>
+            <FRow label={t.prizeType==="item"?"Nama Hadiah":t.prizeType==="pct"?"Persentase (%)":"Prize (IDR)"}>
+              {t.prizeType==="item"?<FInp val={t.prizeItem} onChange={v=>upd(i,"prizeItem",v)} placeholder="iPhone 17 Pro"/>
+               :t.prizeType==="pct"?<FInp val={t.prizePct||0} onChange={v=>upd(i,"prizePct",v)} type="number" placeholder="10"/>
+               :<FInp val={t.prizeAmount} onChange={v=>upd(i,"prizeAmount",v)} type="number" placeholder="0"/>}
             </FRow>
           </FGrid>
-          <LevelPicker value={t.creatorLevel||"Lv.1"} onChange={v=>upd(i,"creatorLevel",v)} label="Level Kreator (Tier ini)"/>
+          <LevelPicker value={t.creatorLevel||"Semua Level"} onChange={v=>upd(i,"creatorLevel",v)} label="Level Kreator (Tier ini)"/>
         </div>
       ))}
       <button onClick={add} style={{width:"100%",background:"transparent",border:`1px dashed ${GD}55`,borderRadius:8,padding:"10px",fontSize:12,color:GD,cursor:"pointer"}}>
@@ -1295,15 +1384,49 @@ function CampaignForm({initial,onSave,onCancel}){
     {w:4,s:"24 Jun",e:"31 Jun",st:weekSt("24 Jun","31 Jun"),prizeType:"cash",prizeAmount:150000,slots:5,creatorLevel:"Lv.1"},
   ];
   const blank={
-    label:"",key:"",icon:"📋",type:"weekly",industry:"dining",period:"monthly",
-    metric:"posts",gmvSource:"nett",creatorLevel:"Semua Level",
-    minPosts:0,minGMV:0,minViews:0,minSessions:0,
-    maxSlots:5,prizeType:"cash",prizeAmount:0,prizeItem:"",
-    city:"",desc:"",status:"live",isActive:true,
-    bannerUrl:"",accentColor:"#FCD308",startDate:"",endDate:"",
-    weeks:defWeeks,tiers:[],isLevelUp:false,requireLevelUp:false,
-    levelFrom:"Lv.1",levelTo:"Lv.2",
-    winType:"highest_gmv",sortOrder:1,
+    // maps to: events.event_name / live_events.event_name
+    label:"", key:"", icon:"📋",
+    // events.challenge_type
+    type:"weekly",
+    // events.industry
+    industry:"dining",
+    // events.rank_by
+    metric:"posts",
+    // events.gmv_source
+    gmvSource:"nett",
+    // events.creator_level
+    creatorLevel:"Semua Level",
+    // events.min_posts / min_gmv_idr / min_views / live_events.min_sessions
+    minPosts:0, minGMV:0, minViews:0, minSessions:0,
+    // events.max_slots
+    maxSlots:5,
+    // events.prize_type / prize_idr / prize_item
+    prizeType:"cash", prizeAmount:0, prizeItem:"",
+    // events.creator_city
+    city:"",
+    // events.description
+    desc:"",
+    // events.is_active
+    isActive:true, status:"live",
+    // banners.image_url
+    bannerUrl:"",
+    // events.accent
+    accentColor:"#FCD308",
+    // events.start_date / end_date
+    startDate:"", endDate:"",
+    // events.sort_order
+    sortOrder:1,
+    // event_weeks rows
+    weeks:defWeeks,
+    // event_tiers rows
+    tiers:[],
+    // events.requires_level_up
+    requireLevelUp:false, isLevelUp:false,
+    levelFrom:"Lv.1", levelTo:"Lv.2",
+    // live_events.win_type
+    winType:"highest_gmv",
+    // events.period
+    period:"monthly",
   };
   const [f,setF]=useState(()=>({...blank,...(initial||{})}));
   const set=(k,v)=>setF(p=>({...p,[k]:v}));
@@ -1311,6 +1434,11 @@ function CampaignForm({initial,onSave,onCancel}){
   const isMonthly=f.type==="monthly";
   const isWeekly=f.type==="weekly";
   const isLevelUp=f.type==="levelup";
+  const isLiveGmvSession=f.type==="live_gmv_session";
+  const isNewCreator=f.type==="new_creator";
+  const isBrand=f.type==="brand";
+  const isSku=f.type==="sku";
+  const isSpecial=isLevelUp||isNewCreator||isBrand||isSku||isLiveGmvSession;
 
   return(
     <div style={{background:BG,minHeight:"100svh",fontFamily:"-apple-system,'SF Pro Text',sans-serif"}}>
@@ -1355,7 +1483,16 @@ function CampaignForm({initial,onSave,onCancel}){
         <FSection title="Konfigurasi">
           <FGrid cols={2}>
             <FRow label="Challenge Type *">
-              <FSel val={f.type} onChange={v=>{set("type",v);if(v==="levelup")set("gmvSource","gross");}} opts={[["weekly","📅 Weekly"],["monthly","📆 Monthly"],["live","📺 Livestreaming"],["levelup","⬆️ Level Up"]]}/>
+              <FSel val={f.type} onChange={v=>{set("type",v);if(v==="levelup"||v==="live_gmv_session")set("gmvSource","gross");}} opts={[
+                ["weekly","📅 Weekly"],
+                ["monthly","📆 Monthly"],
+                ["live","📺 Live Streaming"],
+                ["live_gmv_session","💥 Live GMV Single Session"],
+                ["levelup","⬆️ Level Up"],
+                ["new_creator","🌱 New Creator"],
+                ["brand","🏷️ Brand/POI Challenge"],
+                ["sku","📦 SKU/Product Challenge"],
+              ]}/>
             </FRow>
             {(isLive)&&<FRow label="Period" hint="untuk filter di leaderboard">
               <FSel val={f.period} onChange={v=>set("period",v)} opts={[["monthly","Monthly"],["weekly","Weekly"]]}/>
@@ -1363,8 +1500,16 @@ function CampaignForm({initial,onSave,onCancel}){
             <FRow label="Industry *">
               <FSel val={f.industry} onChange={v=>set("industry",v)} opts={[["dining","🍽 Dinings"],["accom","🏨 Accommodations"],["ttd","🎯 Things to Do"]]}/>
             </FRow>
-            {!isLevelUp&&<FRow label="Metric *">
-              <FSel val={f.metric} onChange={v=>set("metric",v)} opts={[["posts","📝 Posts"],["gmv","💰 GMV"],["views","👁 Views"],["mixed","📊 GMV + Posts"],["sessions","🔴 Live Sessions"]]}/>
+            {!isSpecial&&<FRow label="Metric *">
+              <FSel val={f.metric} onChange={v=>set("metric",v)} opts={[
+                ["posts","📝 Posts"],
+                ["gmv","💰 GMV"],
+                ["views","👁 Views (Total)"],
+                ["views_per_post","👁 Views per Post (rata-rata)"],
+                ["mixed","📊 GMV + Posts"],
+                ["sessions","🔴 Live Sessions"],
+                ["live_gmv_single","💥 GMV Single Live Session"],
+              ]}/>
             </FRow>}
             {(f.metric==="gmv"||f.metric==="mixed"||isLive)&&<FRow label="GMV Source">
               <FSel val={f.gmvSource||"nett"} onChange={v=>set("gmvSource",v)} opts={[["nett","Nett (Redemption amount)"],["gross","Gross (Sales value)"]]}/>
@@ -1381,70 +1526,156 @@ function CampaignForm({initial,onSave,onCancel}){
 
         {/* ── Eligibility ── */}
         <FSection title="Eligibility Criteria">
-          {!isLevelUp&&<LevelPicker value={f.creatorLevel||"Lv.1"} onChange={v=>set("creatorLevel",v)} label="Creator Level *"/>}
-          {!isLevelUp&&<FRow label="Creator City" hint="kosong = nasional"><FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta, Bandung, Surabaya"/></FRow>}
-          {!isLevelUp&&<FGrid cols={3}>
+          {!isSpecial&&<LevelPicker value={f.creatorLevel||"Semua Level"} onChange={v=>set("creatorLevel",v)} label="Creator Level *"/>}
+          {!isSpecial&&<FRow label="Creator City" hint="kosong = nasional"><FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta, Bandung, Surabaya"/></FRow>}
+          {!isSpecial&&<FGrid cols={3}>
             {(f.metric==="posts"||f.metric==="mixed")&&<FRow label="Min Posts"><FInp val={f.minPosts||0} onChange={v=>set("minPosts",v)} type="number" placeholder="0"/></FRow>}
             {(f.metric==="gmv"||f.metric==="mixed")&&<FRow label="Min GMV (IDR)"><FInp val={f.minGMV||0} onChange={v=>set("minGMV",v)} type="number" placeholder="0"/></FRow>}
-            {f.metric==="views"&&<FRow label="Min Total Views"><FInp val={f.minViews||0} onChange={v=>set("minViews",v)} type="number" placeholder="0"/></FRow>}
+            {(f.metric==="views"||f.metric==="views_per_post")&&<FRow label="Min Views"><FInp val={f.minViews||0} onChange={v=>set("minViews",v)} type="number" placeholder="0"/></FRow>}
+            {f.metric==="views_per_post"&&<FRow label="Min Posts (untuk hitung avg)" hint="avg = total views / total posts"><FInp val={f.minPosts||0} onChange={v=>set("minPosts",v)} type="number" placeholder="1"/></FRow>}
             {(f.metric==="sessions"||isLive)&&<FRow label="Min Sessions"><FInp val={f.minSessions||0} onChange={v=>set("minSessions",v)} type="number" placeholder="0"/></FRow>}
-            {(f.metric==="sessions"||isLive)&&(
-              <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"8px 12px",marginBottom:14,fontSize:11,color:MT,lineHeight:1.6}}>
-                ⚠️ <span style={{color:Y,fontWeight:600}}>1 sesi = min 2 jam live.</span> Sesi di bawah 2 jam tidak dihitung sebagai valid session.
-              </div>
-            )}
+            {(f.metric==="sessions"||isLive)&&<div style={{gridColumn:"1/-1",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"8px 12px",fontSize:11,color:MT,lineHeight:1.6}}>⚠️ <span style={{color:Y,fontWeight:600}}>1 sesi = min 2 jam live.</span></div>}
             {isLive&&<FRow label="Win Type"><FSel val={f.winType||"highest_gmv"} onChange={v=>set("winType",v)} opts={[["highest_gmv","Highest GMV"],["criteria","Criteria (GMV + Sessions)"]]}/></FRow>}
+            <FRow label="Min Campaigns Diikuti" hint="kreator harus ikut min N campaign berbeda"><FInp val={f.minCampaigns||0} onChange={v=>set("minCampaigns",v)} type="number" placeholder="0"/></FRow>
           </FGrid>}
+
+          {/* ── Level Up ── */}
           {isLevelUp&&(
             <div style={{background:`${Y}0A`,border:`1px solid ${Y}25`,borderRadius:10,padding:"14px"}}>
               <div style={{fontSize:12,fontWeight:700,color:Y,marginBottom:10}}>⬆️ Level Up Campaign</div>
-              <div style={{fontSize:12,color:MT,lineHeight:1.65,marginBottom:14}}>Pemenang adalah kreator yang naik level selama periode campaign. Tentukan dari level berapa kreator bisa ikut dan ke level berapa mereka harus naik.</div>
-              {/* Gross GMV note */}
-              <div style={{background:"rgba(255,165,0,0.08)",border:"1px solid rgba(255,165,0,0.3)",borderRadius:8,padding:"8px 12px",marginBottom:14,fontSize:11,color:"#FFA500",lineHeight:1.6}}>
-                📊 <span style={{fontWeight:700}}>GMV Source: Gross (Sales Value)</span><br/>
-                <span style={{fontSize:10,color:"rgba(255,165,0,0.7)"}}>Level Up campaign selalu menggunakan nilai Gross GMV, bukan Nett/Redemption amount.</span>
+              <div style={{background:"rgba(255,165,0,0.08)",border:"1px solid rgba(255,165,0,0.3)",borderRadius:8,padding:"8px 12px",marginBottom:12,fontSize:11,color:"#FFA500"}}>
+                📊 <b>GMV Source: Gross (Sales Value)</b> — menggunakan nilai Gross GMV, bukan Nett.
               </div>
               <FGrid cols={2}>
-                <FRow label="Dari Level" hint="level awal kreator">
-                  <FSel val={f.levelFrom||"Lv.1"} onChange={v=>set("levelFrom",v)} opts={[
-                    ["Lv.1","⭐ Level 1"],["Lv.2","⭐⭐ Level 2"],["Lv.3","⭐⭐⭐ Level 3"]
-                  ]}/>
-                </FRow>
-                <FRow label="Ke Level" hint="level yang harus dicapai">
-                  <FSel val={f.levelTo||"Lv.2"} onChange={v=>set("levelTo",v)} opts={[
-                    ["Lv.2","⭐⭐ Level 2"],["Lv.3","⭐⭐⭐ Level 3"],["Lv.4","⭐⭐⭐⭐ Level 4"]
-                  ]}/>
-                </FRow>
+                <FRow label="Dari Level"><FSel val={f.levelFrom||"Lv.1"} onChange={v=>set("levelFrom",v)} opts={[["Lv.1","⭐ L1"],["Lv.2","⭐⭐ L2"],["Lv.3","⭐⭐⭐ L3"]]}/></FRow>
+                <FRow label="Ke Level"><FSel val={f.levelTo||"Lv.2"} onChange={v=>set("levelTo",v)} opts={[["Lv.2","⭐⭐ L2"],["Lv.3","⭐⭐⭐ L3"],["Lv.4","⭐⭐⭐⭐ L4"]]}/></FRow>
               </FGrid>
-              {f.levelFrom&&f.levelTo&&(
-                <div style={{background:"rgba(255,255,255,0.04)",borderRadius:8,padding:"8px 12px",fontSize:11,color:MT,marginBottom:10}}>
-                  Kreator <span style={{color:lvC(f.levelFrom),fontWeight:700}}>{f.levelFrom}</span> → naik ke <span style={{color:lvC(f.levelTo),fontWeight:700}}>{f.levelTo}</span> selama periode campaign = pemenang.
-                </div>
-              )}
-              {/* Min thresholds - optional eligibility gates */}
-              <div style={{fontSize:11,fontWeight:600,color:MT,marginBottom:8,marginTop:4}}>Min Eligibility <span style={{fontSize:10,color:DT,fontWeight:400}}>(opsional, 0 = tidak ada syarat)</span></div>
+              <LevelPicker value={f.creatorLevel||"Semua Level"} onChange={v=>set("creatorLevel",v)}/>
+              <FRow label="Creator City" hint="kosong = nasional"><FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta"/></FRow>
               <FGrid cols={3}>
                 <FRow label="Min Gross GMV (IDR)"><FInp val={f.minGMV||0} onChange={v=>set("minGMV",v)} type="number" placeholder="0"/></FRow>
                 <FRow label="Min Posts"><FInp val={f.minPosts||0} onChange={v=>set("minPosts",v)} type="number" placeholder="0"/></FRow>
                 <FRow label="Min Views"><FInp val={f.minViews||0} onChange={v=>set("minViews",v)} type="number" placeholder="0"/></FRow>
               </FGrid>
-              <FRow label="Creator City" hint="kosong = nasional">
-                <FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta, Bandung"/>
-              </FRow>
               <FCheck checked={f.requireLevelUp} onChange={v=>set("requireLevelUp",v)} label="Require level-up to qualify (tracked via creator_level_log)"/>
+            </div>
+          )}
+
+          {/* ── Live GMV Single Session ── */}
+          {isLiveGmvSession&&(
+            <div style={{background:"rgba(255,77,79,0.06)",border:"1px solid rgba(255,77,79,0.25)",borderRadius:10,padding:"14px"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#FF4D4F",marginBottom:10}}>💥 Live GMV Single Session</div>
+              <div style={{fontSize:12,color:MT,lineHeight:1.65,marginBottom:12}}>Kreator yang berhasil mencapai target GMV dalam <b>1 sesi live saja</b> langsung menang (first come, first serve selama slot masih ada).</div>
+              <FGrid cols={2}>
+                <FRow label="Target GMV per Sesi (IDR)" hint="GMV dalam 1 sesi live"><FInp val={f.targetGmvPerSession||0} onChange={v=>set("targetGmvPerSession",v)} type="number" placeholder="5000000"/></FRow>
+                <FRow label="GMV Source"><FSel val={f.gmvSource||"nett"} onChange={v=>set("gmvSource",v)} opts={[["nett","Nett (GMV Nett IDR)"],["gross","Gross (GMV Gross IDR)"]]}/></FRow>
+                <FRow label="Min Durasi Sesi (jam)" hint="sesi harus min X jam"><FInp val={f.minSessionHours||2} onChange={v=>set("minSessionHours",v)} type="number" placeholder="2"/></FRow>
+                <FRow label="Max Slots (pemenang)" hint="first come first serve"><FInp val={f.maxSlots||5} onChange={v=>set("maxSlots",v)} type="number" placeholder="5"/></FRow>
+              </FGrid>
+              <LevelPicker value={f.creatorLevel||"Semua Level"} onChange={v=>set("creatorLevel",v)}/>
+              <div style={{background:`${Y}0A`,border:`1px solid ${Y}20`,borderRadius:8,padding:"8px 12px",fontSize:11,color:"rgba(252,211,8,0.8)"}}>
+                ⚡ Slot langsung terisi saat kreator memenuhi syarat. DB field: <code>tiktok_live_sessions.gmv_nett_idr / gmv_gross_idr</code>
+              </div>
+            </div>
+          )}
+
+          {/* ── New Creator ── */}
+          {isNewCreator&&(
+            <div style={{background:"rgba(34,197,94,0.06)",border:"1px solid rgba(34,197,94,0.2)",borderRadius:10,padding:"14px"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#22C55E",marginBottom:10}}>🌱 New Creator Campaign</div>
+              <div style={{fontSize:12,color:MT,lineHeight:1.65,marginBottom:12}}>Hanya berlaku untuk kreator yang belum pernah aktif sebelumnya. Bulan berjalan valid — bulan berikutnya tidak eligible lagi jika sudah aktif.</div>
+              <FGrid cols={2}>
+                <FRow label="Inaktif Minimal (bulan)" hint="creator harus tidak ada aktivitas selama N bulan terakhir"><FInp val={f.minInactiveMonths||6} onChange={v=>set("minInactiveMonths",v)} type="number" placeholder="6"/></FRow>
+                <FRow label="Atau: Join Date setelah"><FInp val={f.joinAfterDate||""} onChange={v=>set("joinAfterDate",v)} type="date" placeholder=""/></FRow>
+              </FGrid>
+              <LevelPicker value={f.creatorLevel||"Semua Level"} onChange={v=>set("creatorLevel",v)}/>
+              <FRow label="Creator City" hint="kosong = nasional"><FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta"/></FRow>
+              <FGrid cols={3}>
+                <FRow label="Min Posts (bulan ini)"><FInp val={f.minPosts||0} onChange={v=>set("minPosts",v)} type="number" placeholder="0"/></FRow>
+                <FRow label="Min GMV (IDR)"><FInp val={f.minGMV||0} onChange={v=>set("minGMV",v)} type="number" placeholder="0"/></FRow>
+                <FRow label="Max Slots"><FInp val={f.maxSlots||10} onChange={v=>set("maxSlots",v)} type="number" placeholder="10"/></FRow>
+              </FGrid>
+              <div style={{background:"rgba(255,255,255,0.04)",borderRadius:8,padding:"8px 12px",fontSize:11,color:DT}}>
+                DB: cek <code>tiktok_go_video_summary.author_id</code> tidak ada di data 6 bulan sebelumnya
+              </div>
+            </div>
+          )}
+
+          {/* ── Brand/POI Challenge ── */}
+          {isBrand&&(
+            <div style={{background:"rgba(167,139,250,0.06)",border:"1px solid rgba(167,139,250,0.2)",borderRadius:10,padding:"14px"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#A78BFA",marginBottom:10}}>🏷️ Brand/POI Challenge</div>
+              <div style={{fontSize:12,color:MT,lineHeight:1.65,marginBottom:12}}>Kreator harus memposting konten yang mengandung brand/POI dari daftar di bawah. Sistem akan mencocokkan nama brand/POI dari data transaksi.</div>
+              <FGrid cols={2}>
+                <FRow label="Min Brand dari Daftar" hint="kreator harus posting min N brand berbeda dari list"><FInp val={f.minBrandsFromList||1} onChange={v=>set("minBrandsFromList",v)} type="number" placeholder="1"/></FRow>
+                <FRow label="Match Type"><FSel val={f.brandMatchType||"contains"} onChange={v=>set("brandMatchType",v)} opts={[["contains","Contains (nama mengandung)"],["exact","Exact Match"],["starts_with","Starts With"]]}/></FRow>
+              </FGrid>
+              <ListPasteEditor
+                value={f.brandList||[]}
+                onChange={v=>set("brandList",v)}
+                label="Daftar Brand/POI (poi_name_en atau poi_l2_asci_name)"
+                placeholder={"McDonald's Indonesia\nKFC\nIndomaret\nAlfamart"}
+                hint="DB: tiktok_go_video_transactions.poi_name_en"/>
+              <LevelPicker value={f.creatorLevel||"Semua Level"} onChange={v=>set("creatorLevel",v)}/>
+              <FRow label="Creator City"><FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta"/></FRow>
+              <FGrid cols={2}>
+                <FRow label="Min Posts"><FInp val={f.minPosts||0} onChange={v=>set("minPosts",v)} type="number" placeholder="0"/></FRow>
+                <FRow label="Min GMV (IDR)"><FInp val={f.minGMV||0} onChange={v=>set("minGMV",v)} type="number" placeholder="0"/></FRow>
+              </FGrid>
+            </div>
+          )}
+
+          {/* ── SKU/Product Challenge (Live) ── */}
+          {isSku&&(
+            <div style={{background:"rgba(251,146,60,0.06)",border:"1px solid rgba(251,146,60,0.2)",borderRadius:10,padding:"14px"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#FB923C",marginBottom:10}}>📦 SKU/Product Challenge</div>
+              <div style={{fontSize:12,color:MT,lineHeight:1.65,marginBottom:12}}>Khusus Live Streaming. Kreator harus menjual produk dari daftar SKU di bawah. Sistem mencocokkan nama produk dari data sesi live.</div>
+              <FGrid cols={2}>
+                <FRow label="Min SKU dari Daftar" hint="kreator harus jual min N produk berbeda dari list"><FInp val={f.minSkusFromList||1} onChange={v=>set("minSkusFromList",v)} type="number" placeholder="1"/></FRow>
+                <FRow label="Match Type"><FSel val={f.skuMatchType||"contains"} onChange={v=>set("skuMatchType",v)} opts={[["contains","Contains (nama mengandung)"],["exact","Exact Match"]]}/></FRow>
+                <FRow label="Min GMV dari SKU List (IDR)"><FInp val={f.minSkuGmv||0} onChange={v=>set("minSkuGmv",v)} type="number" placeholder="0"/></FRow>
+                <FRow label="GMV Source"><FSel val={f.gmvSource||"nett"} onChange={v=>set("gmvSource",v)} opts={[["nett","Nett"],["gross","Gross"]]}/></FRow>
+              </FGrid>
+              <ListPasteEditor
+                value={f.skuList||[]}
+                onChange={v=>set("skuList",v)}
+                label="Daftar Nama Produk/SKU"
+                placeholder={"Indomie Goreng\nAqua 600ml\nPopMie Kuah"}
+                hint="Dicocokkan dengan nama produk di live session"/>
+              <LevelPicker value={f.creatorLevel||"Semua Level"} onChange={v=>set("creatorLevel",v)}/>
+              <FRow label="Creator City"><FInp val={f.city} onChange={v=>set("city",v)} placeholder="e.g. Jakarta"/></FRow>
+              <div style={{background:"rgba(255,255,255,0.04)",borderRadius:8,padding:"8px 12px",fontSize:11,color:DT}}>
+                DB: cocokkan dengan <code>tiktok_live_sessions.room_title</code> atau product name field
+              </div>
             </div>
           )}
         </FSection>
 
-        {/* ── Slots & Prize (Live / LevelUp / non-tiered) ── */}
-        {(isLive||isLevelUp||(!isMonthly&&!isWeekly))&&(
+        {/* ── Slots & Prize ── */}
+        {(isLive||isLevelUp||isLiveGmvSession||isNewCreator||isBrand||isSku||(!isMonthly&&!isWeekly))&&!isLiveGmvSession&&(
           <FSection title="Slots & Prize">
             <FGrid cols={2}>
               <FRow label="Max Slots *"><FInp val={f.maxSlots||5} onChange={v=>set("maxSlots",v)} type="number" placeholder="5"/></FRow>
-              <FRow label="Prize Type"><FSel val={f.prizeType} onChange={v=>set("prizeType",v)} opts={[["cash","Cash (IDR)"],["item","Hadiah Fisik"]]}/></FRow>
+              <FRow label="Prize Type"><FSel val={f.prizeType} onChange={v=>set("prizeType",v)} opts={[["cash","💵 Cash (IDR)"],["item","🎁 Hadiah Fisik"],["pct","% dari GMV"]]}/></FRow>
               {f.prizeType==="cash"&&<FRow label="Prize Amount (IDR)"><FInp val={f.prizeAmount||0} onChange={v=>set("prizeAmount",v)} type="number" placeholder="0"/></FRow>}
               {f.prizeType==="item"&&<FRow label="Nama Hadiah"><FInp val={f.prizeItem||""} onChange={v=>set("prizeItem",v)} placeholder="iPhone 17 Pro"/></FRow>}
+              {f.prizeType==="pct"&&<FRow label="Persentase dari GMV (%)"><FInp val={f.prizePct||0} onChange={v=>set("prizePct",v)} type="number" placeholder="10"/></FRow>}
             </FGrid>
+          </FSection>
+        )}
+
+        {/* Live GMV Session has its own prize section */}
+        {isLiveGmvSession&&(
+          <FSection title="Hadiah per Slot">
+            <FGrid cols={2}>
+              <FRow label="Prize Type"><FSel val={f.prizeType} onChange={v=>set("prizeType",v)} opts={[["cash","💵 Cash (IDR)"],["item","🎁 Hadiah Fisik"],["pct","% dari GMV Sesi"]]}/></FRow>
+              {f.prizeType==="cash"&&<FRow label="Prize Amount (IDR)"><FInp val={f.prizeAmount||0} onChange={v=>set("prizeAmount",v)} type="number" placeholder="0"/></FRow>}
+              {f.prizeType==="item"&&<FRow label="Nama Hadiah"><FInp val={f.prizeItem||""} onChange={v=>set("prizeItem",v)} placeholder="iPhone 17 Pro"/></FRow>}
+              {f.prizeType==="pct"&&<FRow label="Persentase dari GMV Sesi (%)"><FInp val={f.prizePct||0} onChange={v=>set("prizePct",v)} type="number" placeholder="5"/></FRow>}
+            </FGrid>
+            <div style={{background:`${Y}0A`,borderRadius:8,padding:"8px 12px",fontSize:11,color:"rgba(252,211,8,0.8)"}}>
+              ⚡ First come, first serve — saat kreator memenuhi target GMV dalam 1 sesi, slot langsung terisi.
+            </div>
           </FSection>
         )}
 
@@ -1456,12 +1687,20 @@ function CampaignForm({initial,onSave,onCancel}){
           </FSection>
         )}
 
-        {/* ── Monthly: tier config ── */}
-        {isMonthly&&(
-          <FSection title="Tier Pricing (by GMV range)">
-            <div style={{fontSize:11,color:MT,marginBottom:12}}>Setiap kreator hanya masuk ke tier tertinggi yang mereka capai.</div>
-            <TierEditor tiers={f.tiers||[]} onChange={v=>set("tiers",v)}/>
+        {/* ── Tier config — available for ALL campaign types ── */}
+        {(isMonthly||f.useTiers)&&(
+          <FSection title={isMonthly?"Konfigurasi Tier":"Tier Hadiah (Opsional)"}>
+            <div style={{fontSize:11,color:MT,marginBottom:12}}>
+              {isMonthly?"Setiap kreator hanya masuk ke tier tertinggi yang mereka capai.":"Tambah tier untuk memberikan hadiah berbeda berdasarkan pencapaian."}
+            </div>
+            <TierEditor tiers={f.tiers||[]} onChange={v=>set("tiers",v)}
+              metricLabel={f.metric==="posts"?"Posts":f.metric==="views"||f.metric==="views_per_post"?"Views":f.metric==="sessions"?"Sessions":"GMV"}/>
           </FSection>
+        )}
+        {!isMonthly&&!isWeekly&&(
+          <div style={{marginBottom:12}}>
+            <FCheck checked={!!f.useTiers} onChange={v=>set("useTiers",v)} label="Aktifkan Tier Hadiah (opsional — untuk campaign non-weekly/monthly)"/>
+          </div>
         )}
       </div>
     </div>
@@ -1529,7 +1768,7 @@ function AdminPanel({adminUser,onLogout}){
   const duplicateCamp=(c)=>{const dup={...c,id:`c_${Date.now()}`,label:c.label+" (copy)",key:c.key+"-copy",status:"ended",isActive:false,_builtin:false,createdAt:Date.now()};const u=[...campaigns,dup];setCampaigns(u);saveCampaigns(u);showToast("Diduplikasi! 📋");};
 
   const inds=[{id:"dining",icon:"🍽",label:"Dinings"},{id:"accom",icon:"🏨",label:"Accom"},{id:"ttd",icon:"🎯",label:"TTD"}];
-  const typeOpts=[{id:"all",label:"Semua"},{id:"weekly",label:"Weekly"},{id:"monthly",label:"Monthly"},{id:"live",label:"Live"},{id:"levelup",label:"Level Up"}];
+  const typeOpts=[{id:"all",label:"Semua"},{id:"weekly",label:"Weekly"},{id:"monthly",label:"Monthly"},{id:"live",label:"Live"},{id:"live_gmv_session",label:"Live GMV"},{id:"levelup",label:"Level Up"},{id:"new_creator",label:"New Creator"},{id:"brand",label:"Brand"},{id:"sku",label:"SKU"}];
   // Merge ALL_EVENTS (built-in, excluding deleted) + localStorage campaigns
   // If a built-in has an override in localStorage, use override values
   const builtIn=ALL_EVENTS
