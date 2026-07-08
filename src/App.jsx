@@ -1241,7 +1241,7 @@ function AdminLogin({onLogin}){
           Masuk sebagai Admin →
         </button>
       </div>
-      <button onClick={()=>window.location.hash=""} style={{marginTop:16,background:"none",border:`1px solid ${LN}`,borderRadius:10,padding:"8px 20px",fontSize:12,color:MT,cursor:"pointer"}}>
+      <button onClick={()=>window.location.hash="/"} style={{marginTop:16,background:"none",border:`1px solid ${LN}`,borderRadius:10,padding:"8px 20px",fontSize:12,color:MT,cursor:"pointer"}}>
         ← Kembali ke Leaderboard
       </button>
     </div>
@@ -1720,6 +1720,7 @@ function CampaignForm({initial,onSave,onCancel}){
 
 // ── Admin Panel ───────────────────────────────────────────────────────────────
 function AdminPanel({adminUser,onLogout}){
+  const isDesktop=useDesktop();
   const [tab,setTab]=useState("events"); // events | live | banners
   const [view,setView]=useState("list");
   const [editTarget,setEditTarget]=useState(null);
@@ -1802,7 +1803,7 @@ function AdminPanel({adminUser,onLogout}){
   return(
     <div style={{minHeight:"100svh",background:"#080808",fontFamily:"-apple-system,'SF Pro Text',sans-serif",color:WT}}>
       <style>{`select option{background:#1A1A1A;color:#F0F0F0} *{box-sizing:border-box} textarea,input{font-family:inherit} ::-webkit-scrollbar{display:none}`}</style>
-      <div style={{maxWidth:900,margin:"0 auto",background:"#0D0D0D",minHeight:"100svh",boxShadow:"0 0 60px rgba(0,0,0,0.5)"}}>
+      <div style={{maxWidth:isDesktop?900:480,margin:"0 auto",background:"#0D0D0D",minHeight:"100svh",boxShadow:isDesktop?"0 0 60px rgba(0,0,0,0.5)":undefined}}>
 
       {/* Header */}
       <div style={{position:"sticky",top:0,zIndex:200,background:"rgba(13,13,13,0.97)",backdropFilter:"blur(18px)",borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
@@ -1813,7 +1814,7 @@ function AdminPanel({adminUser,onLogout}){
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <span style={{fontSize:11,color:DT}}>@{adminUser}</span>
-            <button onClick={()=>window.location.hash=""} style={{background:"none",border:`1px solid ${LN}`,borderRadius:7,padding:"5px 10px",fontSize:11,color:MT,cursor:"pointer"}}>← Home</button>
+            <button onClick={()=>window.location.hash="/"} style={{background:"none",border:`1px solid ${LN}`,borderRadius:7,padding:"5px 10px",fontSize:11,color:MT,cursor:"pointer"}}>← Home</button>
             <button onClick={onLogout} style={{background:"none",border:`1px solid ${LN}`,borderRadius:7,padding:"5px 10px",fontSize:11,color:MT,cursor:"pointer"}}>Keluar</button>
           </div>
         </div>
@@ -1961,7 +1962,7 @@ function AdminPanel({adminUser,onLogout}){
 export default function App(){
   // ALL hooks must be declared before any conditional returns (React rule)
   const [adminUser,setAdminUser]=useState(()=>{const a=loadAdmin();return a&&Date.now()-a.at<86400000?a.user:null;});
-  const [isAdminMode,setIsAdminMode]=useState(()=>typeof window!=="undefined"&&window.location.hash==="#admin");
+  const [isAdminMode,setIsAdminMode]=useState(()=>typeof window!=="undefined"&&window.location.hash.replace("#","").replace("/","").trim()==="admin");
   const [user,setUser]=useState(null);
   const [ready,setReady]=useState(false);
   const [tab,setTab]=useState("weekly");
@@ -1970,7 +1971,7 @@ export default function App(){
   const isDesktop=useDesktop();
 
   useEffect(()=>{
-    const fn=()=>setIsAdminMode(window.location.hash==="#admin");
+    const fn=()=>setIsAdminMode(window.location.hash.replace("#","").replace("/","").trim()==="admin");
     window.addEventListener("hashchange",fn);return()=>window.removeEventListener("hashchange",fn);
   },[]);
   useEffect(()=>{ const u=loadU(); setUser(u); setReady(true); },[]);
@@ -2190,7 +2191,7 @@ export default function App(){
       <div style={{borderTop:`1px solid ${LN}`,padding:"16px 0 32px",textAlign:"center"}}>
         <div style={{fontSize:10,color:DT}}><span style={{color:Y,fontWeight:700}}>AdtreeGO</span> · adtreedigital.cloud · Juni 2026</div>
         <div style={{marginTop:10}}>
-          <button onClick={()=>{window.location.hash="admin";}} style={{background:"none",border:`1px solid ${LN}`,borderRadius:8,padding:"5px 14px",fontSize:10,color:DT,cursor:"pointer"}}>⚙️ Admin Panel</button>
+          <button onClick={()=>{window.location.hash="#admin";}} style={{background:"none",border:`1px solid ${LN}`,borderRadius:8,padding:"5px 14px",fontSize:10,color:DT,cursor:"pointer"}}>⚙️ Admin Panel</button>
         </div>
       </div>
       {sheet&&<EventSheet event={sheet} username={user.username} globalLevel={filter.level} onClose={()=>setSheet(null)}/> }
