@@ -1241,7 +1241,7 @@ function AdminLogin({onLogin}){
           Masuk sebagai Admin →
         </button>
       </div>
-      <button onClick={()=>window.location.hash="/"} style={{marginTop:16,background:"none",border:`1px solid ${LN}`,borderRadius:10,padding:"8px 20px",fontSize:12,color:MT,cursor:"pointer"}}>
+      <button onClick={()=>{window.location.hash="";window.location.href=window.location.pathname}} style={{marginTop:16,background:"none",border:`1px solid ${LN}`,borderRadius:10,padding:"8px 20px",fontSize:12,color:MT,cursor:"pointer"}}>
         ← Kembali ke Leaderboard
       </button>
     </div>
@@ -1801,9 +1801,9 @@ function AdminPanel({adminUser,onLogout}){
   if(view==="form"||view==="edit")return <CampaignForm initial={editTarget} onSave={saveCamp} onCancel={()=>{setView("list");setEditTarget(null);}}/>;
 
   return(
-    <div style={{minHeight:"100svh",background:"#080808",fontFamily:"-apple-system,'SF Pro Text',sans-serif",color:WT}}>
+    <div style={{minHeight:"100svh",background:BG,fontFamily:"-apple-system,'SF Pro Text',sans-serif",color:WT}}>
       <style>{`select option{background:#1A1A1A;color:#F0F0F0} *{box-sizing:border-box} textarea,input{font-family:inherit} ::-webkit-scrollbar{display:none}`}</style>
-      <div style={{maxWidth:isDesktop?900:480,margin:"0 auto",background:"#0D0D0D",minHeight:"100svh",boxShadow:isDesktop?"0 0 60px rgba(0,0,0,0.5)":undefined}}>
+      <div style={{maxWidth:isDesktop?"100%":480,margin:"0 auto",background:"#0D0D0D",minHeight:"100svh"}}>
 
       {/* Header */}
       <div style={{position:"sticky",top:0,zIndex:200,background:"rgba(13,13,13,0.97)",backdropFilter:"blur(18px)",borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
@@ -1814,7 +1814,7 @@ function AdminPanel({adminUser,onLogout}){
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <span style={{fontSize:11,color:DT}}>@{adminUser}</span>
-            <button onClick={()=>window.location.hash="/"} style={{background:"none",border:`1px solid ${LN}`,borderRadius:7,padding:"5px 10px",fontSize:11,color:MT,cursor:"pointer"}}>← Home</button>
+            <button onClick={()=>{window.location.hash="";window.location.href=window.location.pathname}} style={{background:"none",border:`1px solid ${LN}`,borderRadius:7,padding:"5px 10px",fontSize:11,color:MT,cursor:"pointer"}}>← Home</button>
             <button onClick={onLogout} style={{background:"none",border:`1px solid ${LN}`,borderRadius:7,padding:"5px 10px",fontSize:11,color:MT,cursor:"pointer"}}>Keluar</button>
           </div>
         </div>
@@ -1855,7 +1855,7 @@ function AdminPanel({adminUser,onLogout}){
 
       {tab!=="banners"&&(<>
         {/* Stats + Create */}
-        <div style={{padding:"12px 16px 8px",display:"flex",gap:8,alignItems:"center"}}>
+        <div style={{padding:isDesktop?"12px 32px 8px":"12px 16px 8px",display:"flex",gap:8,alignItems:"center"}}>
           <div style={{background:C1,border:`1px solid ${LN}`,borderRadius:8,padding:"8px 14px",display:"flex",gap:12,alignItems:"center"}}>
             <div style={{textAlign:"center"}}><div style={{fontSize:16,fontWeight:900,color:Y}}>{stats.total}</div><div style={{fontSize:8,color:MT}}>TOTAL</div></div>
             <div style={{width:1,height:24,background:LN}}/>
@@ -1867,7 +1867,7 @@ function AdminPanel({adminUser,onLogout}){
         </div>
 
         {/* Industry filter */}
-        <div style={{display:"flex",gap:5,padding:"0 16px 6px"}}>
+        <div style={{display:"flex",gap:5,padding:isDesktop?"0 32px 6px":"0 16px 6px"}}>
           {inds.map(i=>{const a=filterInd===i.id;return(
             <button key={i.id} onClick={()=>setFilterInd(i.id)}
               style={{flex:1,background:a?Y:"transparent",border:`1px solid ${a?Y:"rgba(255,255,255,0.1)"}`,borderRadius:8,padding:"7px 4px",fontSize:10,fontWeight:a?700:400,color:a?"#000":MT,cursor:"pointer"}}>
@@ -1877,7 +1877,7 @@ function AdminPanel({adminUser,onLogout}){
         </div>
 
         {/* Type filter */}
-        <div style={{display:"flex",gap:4,padding:"0 16px 10px",overflowX:"auto",scrollbarWidth:"none"}}>
+        <div style={{display:"flex",gap:4,padding:isDesktop?"0 32px 10px":"0 16px 10px",overflowX:"auto",scrollbarWidth:"none"}}>
           {(tab==="live"?[{id:"all",label:"Semua"},{id:"live",label:"Live"}]:typeOpts.filter(t=>t.id!=="live")).map(t=>{const a=filterType===t.id;return(
             <button key={t.id} onClick={()=>setFilterType(t.id)}
               style={{flexShrink:0,background:a?`${Y}14`:"transparent",border:`1px solid ${a?Y:"rgba(255,255,255,0.1)"}`,borderRadius:6,padding:"5px 10px",fontSize:10,fontWeight:a?700:400,color:a?Y:MT,cursor:"pointer"}}>
@@ -1961,8 +1961,9 @@ function AdminPanel({adminUser,onLogout}){
 
 export default function App(){
   // ALL hooks must be declared before any conditional returns (React rule)
-  const [adminUser,setAdminUser]=useState(()=>{const a=loadAdmin();return a&&Date.now()-a.at<86400000?a.user:null;});
-  const [isAdminMode,setIsAdminMode]=useState(()=>typeof window!=="undefined"&&window.location.hash.replace("#","").replace("/","").trim()==="admin");
+  const [adminUser,setAdminUser]=useState(()=>{try{const a=loadAdmin();return a&&Date.now()-a.at<86400000?a.user:null;}catch(e){return null;}});
+  const checkAdmin=()=>{try{const h=window.location.hash.replace(/^#\/?/,"").trim();return h==="admin";}catch(e){return false;}};
+  const [isAdminMode,setIsAdminMode]=useState(checkAdmin);
   const [user,setUser]=useState(null);
   const [ready,setReady]=useState(false);
   const [tab,setTab]=useState("weekly");
@@ -1971,8 +1972,11 @@ export default function App(){
   const isDesktop=useDesktop();
 
   useEffect(()=>{
-    const fn=()=>setIsAdminMode(window.location.hash.replace("#","").replace("/","").trim()==="admin");
-    window.addEventListener("hashchange",fn);return()=>window.removeEventListener("hashchange",fn);
+    // Re-check on mount in case useState initializer ran before hash was ready
+    setIsAdminMode(checkAdmin());
+    const fn=()=>setIsAdminMode(checkAdmin());
+    window.addEventListener("hashchange",fn);
+    return()=>window.removeEventListener("hashchange",fn);
   },[]);
   useEffect(()=>{ const u=loadU(); setUser(u); setReady(true); },[]);
 
@@ -2047,13 +2051,20 @@ export default function App(){
   };
   const avail=getAvailable(activeTab==="live"?"live":activeTab==="monthly"?"monthly":"weekly");
 
-  const DW=isDesktop?"900px":"480px";
+  const DW=isDesktop?"100%":"480px";
 
   return(
-    <div style={{minHeight:"100svh",background:isDesktop?"#080808":BG,fontFamily:"-apple-system,'Nunito','SF Pro Text','Segoe UI',sans-serif",color:WT,WebkitFontSmoothing:"antialiased"}}>
-      <style>{`*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.15}} @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}} button:active{opacity:.65} ::-webkit-scrollbar{display:none} input::placeholder{color:#3a3a3a}`}</style>
-      <div style={{maxWidth:DW,margin:"0 auto",background:BG,minHeight:"100svh",position:"relative",
-        boxShadow:isDesktop?"0 0 60px rgba(0,0,0,0.6)":undefined}}>
+    <div style={{minHeight:"100svh",background:BG,fontFamily:"-apple-system,'Nunito','SF Pro Text','Segoe UI',sans-serif",color:WT,WebkitFontSmoothing:"antialiased"}}>
+      <style>{`
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.15}}
+        @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        button:active{opacity:.65}
+        ::-webkit-scrollbar{display:none}
+        input::placeholder{color:#3a3a3a}
+        input,select,textarea{font-size:16px !important}
+      `}</style>
+      <div style={{maxWidth:DW,margin:"0 auto",background:BG,minHeight:"100svh",position:"relative"}}>
       {/* HEADER */}
       <div style={{position:"sticky",top:0,zIndex:200,background:"rgba(10,10,10,0.97)",backdropFilter:"blur(18px)",borderBottom:`1px solid ${LN}`}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",height:54}}>
@@ -2074,23 +2085,29 @@ export default function App(){
       </div>
       {/* CONTENT */}
       <div style={{animation:"up .18s ease"}}>
-        <div style={{padding:"13px 16px 4px",fontSize:13,color:MT}}>Hai, <span style={{color:WT,fontWeight:600}}>{user.username}</span> 👋</div>
-        <BannerCarousel onOpen={setSheet}/>
+        <div style={{padding:isDesktop?"16px 32px 4px":"13px 16px 4px",fontSize:13,color:MT}}>Hai, <span style={{color:WT,fontWeight:600}}>{user.username}</span> 👋</div>
+        <BannerCarousel onOpen={setSheet} isDesktop={isDesktop}/>
         {activeTab==="live"
           ?null
-          :activeTab!=="about"&&<FilterBar filter={filter} setFilter={setFilter} availableInds={avail.inds} availableLvls={avail.lvls}/>}
-        <div style={{padding:"10px 16px 40px"}}>
+          :activeTab!=="about"&&<FilterBar filter={filter} setFilter={setFilter} availableInds={avail.inds} availableLvls={avail.lvls} isDesktop={isDesktop}/>}
+        <div style={{padding:isDesktop?"10px 32px 40px":"10px 16px 40px"}}>
           {activeTab==="weekly"&&(<>
             <div style={{fontSize:10,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:12,marginTop:8}}>Campaign Mingguan · Juni 2026</div>
-            {wEvs.length===0?<EmptyState level={filter.level}/>:wEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
+            <div style={isDesktop?{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:12}:{}}>
+              {wEvs.length===0?<EmptyState level={filter.level}/>:wEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
+            </div>
           </>)}
           {activeTab==="monthly"&&(<>
             <div style={{fontSize:10,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:12,marginTop:8}}>Campaign Bulanan · Juni 2026</div>
-            {mEvs.length===0?<EmptyState level={filter.level}/>:mEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
+            <div style={isDesktop?{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:12}:{}}>
+              {mEvs.length===0?<EmptyState level={filter.level}/>:mEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
+            </div>
           </>)}
           {activeTab==="live"&&(<>
             <div style={{fontSize:10,color:MT,letterSpacing:.5,textTransform:"uppercase",marginBottom:12,marginTop:8}}>Campaign Live Streaming · Juni 2026</div>
-            {lEvs.length===0?<EmptyState level={filter.level}/>:lEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
+            <div style={isDesktop?{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:12}:{}}>
+              {lEvs.length===0?<EmptyState level={filter.level}/>:lEvs.map(e=><EventCard key={e.key} event={e} onOpen={setSheet}/>)}
+            </div>
           </>)}
           {activeTab==="about"&&(
             <div style={{paddingTop:8,paddingBottom:40}}>
