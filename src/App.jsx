@@ -1801,9 +1801,8 @@ function AdminPanel({adminUser,onLogout}){
   if(view==="form"||view==="edit")return <CampaignForm initial={editTarget} onSave={saveCamp} onCancel={()=>{setView("list");setEditTarget(null);}}/>;
 
   return(
-    <div style={{minHeight:"100svh",background:BG,fontFamily:"-apple-system,'SF Pro Text',sans-serif",color:WT}}>
+    <div style={{minHeight:"100svh",background:"#0D0D0D",fontFamily:"-apple-system,'SF Pro Text',sans-serif",color:WT,maxWidth:isDesktop?"100%":"480px",margin:"0 auto"}}>
       <style>{`select option{background:#1A1A1A;color:#F0F0F0} *{box-sizing:border-box} textarea,input{font-family:inherit} ::-webkit-scrollbar{display:none}`}</style>
-      <div style={{maxWidth:isDesktop?"100%":480,margin:"0 auto",background:"#0D0D0D",minHeight:"100svh"}}>
 
       {/* Header */}
       <div style={{position:"sticky",top:0,zIndex:200,background:"rgba(13,13,13,0.97)",backdropFilter:"blur(18px)",borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
@@ -1954,7 +1953,6 @@ function AdminPanel({adminUser,onLogout}){
       </>)}
 
       {toast&&<div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",background:toast.ok?"#16A34A":"#FF4444",color:"#fff",borderRadius:10,padding:"10px 20px",fontSize:13,fontWeight:600,zIndex:999,boxShadow:"0 4px 20px rgba(0,0,0,0.5)",whiteSpace:"nowrap"}}>{toast.msg}</div>}
-      </div>
     </div>
   );
 }
@@ -2054,17 +2052,8 @@ export default function App(){
   const DW=isDesktop?"100%":"480px";
 
   return(
-    <div style={{minHeight:"100svh",background:BG,fontFamily:"-apple-system,'Nunito','SF Pro Text','Segoe UI',sans-serif",color:WT,WebkitFontSmoothing:"antialiased"}}>
-      <style>{`
-        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.15}}
-        @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        button:active{opacity:.65}
-        ::-webkit-scrollbar{display:none}
-        input::placeholder{color:#3a3a3a}
-        input,select,textarea{font-size:16px !important}
-      `}</style>
-      <div style={{maxWidth:DW,margin:"0 auto",background:BG,minHeight:"100svh",position:"relative"}}>
+    <div style={{minHeight:"100svh",background:BG,fontFamily:"-apple-system,'Nunito','SF Pro Text','Segoe UI',sans-serif",color:WT,WebkitFontSmoothing:"antialiased",maxWidth:DW,margin:"0 auto"}}>
+      <style>{`*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.15}} @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}} button:active{opacity:.65} ::-webkit-scrollbar{display:none} input::placeholder{color:#3a3a3a} input,select,textarea{font-size:16px !important}`}</style>
       {/* HEADER */}
       <div style={{position:"sticky",top:0,zIndex:200,background:"rgba(10,10,10,0.97)",backdropFilter:"blur(18px)",borderBottom:`1px solid ${LN}`}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",height:54}}>
@@ -2212,7 +2201,6 @@ export default function App(){
         </div>
       </div>
       {sheet&&<EventSheet event={sheet} username={user.username} globalLevel={filter.level} onClose={()=>setSheet(null)}/> }
-      </div>
     </div>
   );
 }
